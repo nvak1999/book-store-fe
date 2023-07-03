@@ -17,6 +17,7 @@ const initialState = {
   search: "",
   searchInput: "",
   review: "",
+  totalPages: 0,
 };
 const slice = createSlice({
   name: "book",
@@ -32,7 +33,8 @@ const slice = createSlice({
     getBooksSuccess(state, action) {
       state.isLoading = false;
       state.errors = null;
-      state.books = action.payload;
+      state.books = action.payload.books;
+      state.totalPages = action.payload.totalPages;
     },
     getSingleBooksSuccess(state, action) {
       state.isLoading = false;

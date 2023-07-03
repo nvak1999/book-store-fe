@@ -19,6 +19,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
@@ -26,8 +27,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import LoadingScreen from "../../components/LoadingScreen";
 
 function BookList() {
-  const { books, page, categories, category, search, searchInput, isLoading } =
-    useSelector((state) => state.book);
+  const {
+    books,
+    page,
+    categories,
+    category,
+    search,
+    searchInput,
+    isLoading,
+    totalPages,
+  } = useSelector((state) => state.book);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -38,13 +47,10 @@ function BookList() {
   useEffect(() => {
     if (category !== "") {
       dispatch(getSingleCategory(category));
+    } else {
+      dispatch(getBooks(page, search));
     }
-  }, [dispatch, category]);
-
-  useEffect(() => {
-    console.log(books);
-    console.log(category);
-  }, [books, category]);
+  }, [dispatch, category, page, search]);
 
   const handleChange_page = (event, value) => {
     dispatch(handleChangePage(value));
@@ -61,6 +67,40 @@ function BookList() {
   const handleChang_Keyword = (input) => {
     dispatch(handleChangKeyword(input));
   };
+
+  const bookGird = (
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: 1000,
+        }}
+      >
+        <Grid container wrap="wrap">
+          {books &&
+            books.map((book) => (
+              <Grid
+                item
+                justifyContent="center"
+                lg={4}
+                md={6}
+                xs={12}
+                key={book._id}
+              >
+                <Link
+                  to={`book/${book._id}`}
+                  style={{ textDecoration: "none" }}
+                >
+                  <BookCard book={book} />
+                </Link>
+              </Grid>
+            ))}
+        </Grid>
+      </Box>
+    </>
+  );
 
   return (
     <Box
@@ -90,6 +130,9 @@ function BookList() {
             label="Category"
             onChange={handleChange_Category}
           >
+            <MenuItem key="category" value="">
+              All category
+            </MenuItem>
             {categories.map((category) => (
               <MenuItem key={category._id} value={category._id}>
                 {category.categoryName}
@@ -129,37 +172,14 @@ function BookList() {
         >
           <LoadingScreen />
         </Box>
+      ) : books.length > 0 ? (
+        bookGird
       ) : (
         <>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              maxWidth: 1000,
-            }}
-          >
-            <Grid container wrap="wrap">
-              {books &&
-                books.map((book) => (
-                  <Grid
-                    container
-                    item
-                    justifyContent="center"
-                    lg={4}
-                    md={6}
-                    xs={12}
-                    key={book._id}
-                  >
-                    <Link
-                      to={`book/${book._id}`}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <BookCard />
-                    </Link>
-                  </Grid>
-                ))}
-            </Grid>
+          <Box>
+            <Typography variant="h5" component="div" gutterBottom>
+              Book not found !
+            </Typography>
           </Box>
         </>
       )}
@@ -167,7 +187,7 @@ function BookList() {
       <Pagination
         page={page}
         size="small"
-        count={5}
+        count={totalPages}
         color="primary"
         sx={{ alignSelf: "center", m: 2 }}
         onChange={handleChange_page}

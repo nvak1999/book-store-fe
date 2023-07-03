@@ -69,7 +69,7 @@ function BookSingle() {
             mt: 10,
           }}
         >
-          <Grid container spacing={1} sx={{ width: 800 }}>
+          <Grid container spacing={2} sx={{ width: 800 }}>
             <Grid
               item
               xs={12}
@@ -82,15 +82,18 @@ function BookSingle() {
             >
               <Card
                 sx={{
-                  width: "100%",
-                  maxWidth: 360,
-                  minWidth: 220,
-                  height: "100%",
+                  width: 350,
+                  height: 530,
                 }}
               >
                 <CardMedia
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
                   component="img"
-                  image="https://imgv2-2-f.scribdassets.com/img/word_document/487681026/original/432x574/66b6c930d0/1648771671?v=1"
+                  image={book.img}
                   alt="Book Cover"
                 />
               </Card>
@@ -106,10 +109,8 @@ function BookSingle() {
             >
               <Card
                 sx={{
-                  width: "100%",
-                  maxWidth: 360,
-                  minWidth: 220,
-                  height: "100%",
+                  width: 350,
+                  height: 530,
                   display: "flex",
                   flexDirection: "column",
                 }}
@@ -118,22 +119,31 @@ function BookSingle() {
                   <Typography variant="h5" component="div" gutterBottom>
                     {book.name}
                   </Typography>
-                  <Typography variant="subtitle1" component="div" gutterBottom>
-                    Categories:
-                  </Typography>
-                  <Box sx={{ display: "flex" }}>
-                    {book.categories?.map((category, index) => (
-                      <Chip
-                        key={index}
-                        sx={{ marginRight: 1, marginBottom: 1 }}
-                        label={category}
-                        variant="outlined"
-                        color="primary"
-                      />
-                    ))}
+                  <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+                    <Typography
+                      variant="subtitle1"
+                      component="div"
+                      gutterBottom
+                    >
+                      Categories:
+                    </Typography>
+                    <Box sx={{ display: "flex", ml: 1 }}>
+                      {book.categories?.map((category, index) => (
+                        <Chip
+                          key={index}
+                          sx={{ marginRight: 1, marginBottom: 1 }}
+                          label={category}
+                          variant="outlined"
+                          color="primary"
+                        />
+                      ))}
+                    </Box>
                   </Box>
                   <Typography variant="subtitle1" component="div" gutterBottom>
                     Author: {book.author}
+                  </Typography>
+                  <Typography variant="subtitle1" component="div" gutterBottom>
+                    Publication date: {book.publicationDate}
                   </Typography>
                   <Typography variant="subtitle1" component="div" gutterBottom>
                     Price: {book.price} $
@@ -142,7 +152,7 @@ function BookSingle() {
                   <div
                     style={{
                       overflowY: "scroll",
-                      height: "130px",
+                      height: "155px",
                       border: "1px solid rgba(0, 0, 0, 0.3)",
                     }}
                   >
@@ -251,3 +261,10 @@ function BookSingle() {
 }
 
 export default BookSingle;
+
+// sx={{
+//   width: "100%",
+//   maxWidth: 360,
+//   minWidth: 220,
+//   height: "100%",
+// }}

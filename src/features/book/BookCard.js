@@ -3,11 +3,13 @@ import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import { CardActionArea } from "@mui/material";
 
-export default function BookCard() {
+export default function BookCard({ book }) {
   return (
     <Card
       sx={{
-        Width: 300,
+        maxWidth: 300,
+        // width: 300,
+        height: 450,
         display: "flex",
         justifyContent: "space-between",
         flexDirection: "column",
@@ -15,11 +17,20 @@ export default function BookCard() {
         m: 3,
       }}
     >
-      <CardActionArea>
+      <CardActionArea
+        sx={{
+          height: "100%",
+        }}
+      >
         <CardMedia
           component="img"
-          image="https://imgv2-2-f.scribdassets.com/img/word_document/487681026/original/432x574/66b6c930d0/1648771671?v=1"
-          alt="Green Iguana"
+          image={book.img}
+          alt="Book Cover"
+          sx={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
         />
       </CardActionArea>
     </Card>
