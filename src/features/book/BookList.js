@@ -75,7 +75,9 @@ function BookList() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          width: 1000,
+          width: "100%",
+          maxWidth: 1000,
+          margin: "0 auto",
         }}
       >
         <Grid container wrap="wrap">
@@ -91,7 +93,12 @@ function BookList() {
               >
                 <Link
                   to={`book/${book._id}`}
-                  style={{ textDecoration: "none" }}
+                  style={{
+                    textDecoration: "none",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 >
                   <BookCard book={book} />
                 </Link>
