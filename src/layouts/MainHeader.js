@@ -92,12 +92,20 @@ function MainHeader() {
                 onClose={handleClose}
               >
                 <MenuItem
+                  to={`order/${user._id}`}
+                  component={RouterLink}
+                  onClick={handleClose}
+                >
+                  Order
+                </MenuItem>
+                <MenuItem
                   to={`user/${user._id}`}
                   component={RouterLink}
                   onClick={handleClose}
                 >
                   Profile
                 </MenuItem>
+
                 <MenuItem onClick={handleLogout}>Log out</MenuItem>
               </Menu>
             </div>

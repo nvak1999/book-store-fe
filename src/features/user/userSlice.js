@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import apiService from "../../app/apiService";
 
 const initialState = {
+  isLoading: false,
   user: [],
   errors: null,
 };
@@ -11,15 +12,42 @@ const slice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser: (state, action) => {
+    startLoading(state) {
+      state.isLoading = true;
+    },
+    hasError(state, action) {
+      state.isLoading = false;
+      state.errors = action.payload;
+    },
+    getUserSuccess(state, action) {
+      state.isLoading = false;
       state.user = action.payload;
     },
-    setError: (state, action) => {
-      state.errors = action.payload;
+    changData(state, action) {
+      state.user = action.payload;
     },
   },
 });
 
-export const { setUser, setError } = slice.actions;
+export const getUser = (userId) => async (dispatch) => {
+  dispatch(slice.actions.startLoading());
+  try {
+    const response = await apiService.get(`/users/${userId}`);
+    dispatch(slice.actions.getUserSuccess(response.data));
+  } catch (error) {
+    dispatch(slice.actions.hasError(error));
+    toast.error(error.message);
+  }
+};
+
+export const updateUser = (userData, userId) => async (dispatch) => {
+  try {
+    await apiService.put(`/users/${userId}`, userData);
+    toast.success("Update user profile successfully");
+  } catch (error) {
+    dispatch(slice.actions.hasError(error));
+    toast.error(error.message);
+  }
+};
 
 export default slice.reducer;

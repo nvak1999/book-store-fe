@@ -10,6 +10,7 @@ import AuthRequire from "./AuthRequire";
 import UserProfilePage from "../pages/UserProfilePage";
 import SingleBookPage from "../pages/SingleBookPage";
 import CartPage from "../pages/CartPage";
+import OrderPage from "../pages/OrderPage";
 
 function Router() {
   return (
@@ -26,6 +27,7 @@ function Router() {
         <Route path="user/:userId" element={<UserProfilePage />} />
         <Route path="book/:bookId" element={<SingleBookPage />} />
         <Route path="cart/:userId" element={<CartPage />} />
+        <Route path="order/:userId" element={<OrderPage />} />
       </Route>
 
       <Route element={<BlankLayout />}>
