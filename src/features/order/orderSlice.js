@@ -21,7 +21,7 @@ const slice = createSlice({
     },
     getOrderSuccess(state, action) {
       state.isLoading = false;
-      state.order = action.payload;
+      state.orders = action.payload;
     },
   },
 });
