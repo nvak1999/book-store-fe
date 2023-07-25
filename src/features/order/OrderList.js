@@ -83,7 +83,14 @@ function OrderList() {
                       </TableBody>
                     </Table>
                   </TableContainer>
-                  <Box sx={{ ml: 4, maxWidth: "500px" }}>
+                  <Box
+                    sx={{
+                      ml: 4,
+                      width: "100%",
+                      maxWidth: 500,
+                      margin: "0 auto",
+                    }}
+                  >
                     <p>
                       <b>Status:</b>{" "}
                       <span
@@ -115,14 +122,13 @@ function OrderList() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
-                      maxWidth: "500px",
                       mr: 3,
                     }}
                   >
                     <Button
                       variant="contained"
                       color="primary"
-                      sx={{ width: 150, height: 40, alignSelf: "center" }}
+                      sx={{ width: 150, height: 40 }}
                       onClick={() => handleCancel(order._id)}
                     >
                       Cancel
