@@ -85,54 +85,57 @@ function OrderList() {
                   </TableContainer>
                   <Box
                     sx={{
-                      ml: 4,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      flexWrap: "wrap",
                       width: "100%",
-                      maxWidth: 500,
+                      maxWidth: 700,
                       margin: "0 auto",
                     }}
                   >
-                    <p>
-                      <b>Status:</b>{" "}
-                      <span
-                        style={{
-                          color:
-                            order.status === "Processing" ||
-                            order.status === "Shipped"
-                              ? "green"
-                              : "red",
-                        }}
-                      >
-                        {order.status}
-                      </span>
-                    </p>
+                    <Box sx={{}}>
+                      <p>
+                        <b>Status:</b>{" "}
+                        <span
+                          style={{
+                            color:
+                              order.status === "Processing" ||
+                              order.status === "Shipped"
+                                ? "green"
+                                : "red",
+                          }}
+                        >
+                          {order.status}
+                        </span>
+                      </p>
 
-                    <p>
-                      <b>Total Amount:</b> $ {order.totalAmount}
-                    </p>
-                    <p>
-                      <b>Shipping Address:</b> {order.shippingAddress}
-                    </p>
-                    <p>
-                      <b>Created at:</b> {formatDateTime(order.createdAt)}
-                    </p>
-                  </Box>
+                      <p>
+                        <b>Total Amount:</b> $ {order.totalAmount}
+                      </p>
+                      <p>
+                        <b>Shipping Address:</b> {order.shippingAddress}
+                      </p>
+                      <p>
+                        <b>Created at:</b> {formatDateTime(order.createdAt)}
+                      </p>
+                    </Box>
 
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      mr: 3,
-                    }}
-                  >
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      sx={{ width: 150, height: 40 }}
-                      onClick={() => handleCancel(order._id)}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
                     >
-                      Cancel
-                    </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{ width: 150, height: 40 }}
+                        onClick={() => handleCancel(order._id)}
+                      >
+                        Cancel
+                      </Button>
+                    </Box>
                   </Box>
                 </Box>
                 <hr style={{ marginTop: "16px", marginBottom: "16px" }} />
