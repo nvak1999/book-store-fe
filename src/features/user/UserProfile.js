@@ -50,7 +50,6 @@ function UserProfile() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Check if any required field is missing or empty
     const requiredFields = [
       "name",
       "email",
@@ -63,10 +62,9 @@ function UserProfile() {
 
     if (missingFields.length > 0) {
       toast.error("Please fill in all required fields.");
-      return; // Return early, don't proceed with the update
+      return;
     }
 
-    // If all required fields are filled, proceed with updating the user profile
     dispatch(updateUser(userData, userId));
   };
 

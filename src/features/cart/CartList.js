@@ -61,16 +61,20 @@ function CartList() {
   const handleOrder = () => {
     const checkedBooks = cart.filter((item) => item.checked);
 
-    if (!user.address || !user.city || !user.state || !user.zipcode) {
-      toast.error("Please update your profile address.");
-      return;
-    }
-
-    if (checkedBooks.length > 0) {
-      const shippingAddress = `${user.address}, ${user.state}, ${user.city}, ${user.zipcode}`;
-      dispatch(orderCart(userId, checkedBooks, shippingAddress));
-    } else {
+    if (checkedBooks.length === 0) {
       toast.error("Please select at least one book to order.");
+    } else if (cart.length === 0) {
+      toast.error(
+        "Your cart is empty. Please add books to your cart before placing an order."
+      );
+    } else {
+      if (!user.address || !user.city || !user.state || !user.zipcode) {
+        toast.error("Please update your profile address.");
+        return;
+      } else {
+        const shippingAddress = `${user.address}, ${user.state}, ${user.city}, ${user.zipcode}`;
+        dispatch(orderCart(userId, checkedBooks, shippingAddress));
+      }
     }
   };
 
