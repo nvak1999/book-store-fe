@@ -26,16 +26,22 @@ import {
 } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import useAuth from "../../hooks/useAuth";
+
 import { toast } from "react-toastify";
+import { getUser } from "../user/userSlice";
 
 function CartList() {
   const { cart, isLoading } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.user);
   const { userId } = useParams();
-  const { user } = useAuth();
+
   const dispatch = useDispatch();
   const theme = useTheme();
   const isExtraSmallScreen = useMediaQuery(theme.breakpoints.down("xs"));
+
+  useEffect(() => {
+    dispatch(getUser(userId));
+  }, [dispatch, userId]);
 
   useEffect(() => {
     dispatch(getCart(userId));
