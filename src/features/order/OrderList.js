@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { getOrder } from "./orderSlice";
+import { getOrder, cancelOrder } from "./orderSlice";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingScreen from "../../components/LoadingScreen";
@@ -27,7 +27,12 @@ function OrderList() {
   }, [dispatch, userId]);
 
   const formatDateTime = (dateTime) => {
-    return format(new Date(dateTime), "EEEE, MMMM/ d/ yyyy, HH:mm:ss");
+    return format(new Date(dateTime), "EEEE, MMMM-d-yyyy, HH:mm:ss");
+  };
+
+  const handleCancel = (orderId) => {
+    dispatch(cancelOrder(userId, orderId));
+    dispatch(getOrder(userId));
   };
 
   return (
@@ -44,16 +49,23 @@ function OrderList() {
               Booktify Order
             </Typography>
             {orders.map((order) => (
-              <Box key={order._id} sx={{ ml: 3, mr: 3 }}>
-                <div>
+              <Box key={order._id} sx={{ m: 3 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                  }}
+                >
                   <TableContainer
                     component={Paper}
-                    style={{ marginBottom: "16px" }}
+                    sx={{ width: "100%", maxWidth: 700, margin: "0 auto" }}
                   >
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell>Book ID</TableCell>
+                          <TableCell>Name</TableCell>
                           <TableCell>Quantity</TableCell>
                           <TableCell>Price</TableCell>
                           <TableCell>Total</TableCell>
@@ -62,21 +74,33 @@ function OrderList() {
                       <TableBody>
                         {order.books.map((book) => (
                           <TableRow key={book._id}>
-                            <TableCell>{book.bookId}</TableCell>
+                            <TableCell>{book.name || ""}</TableCell>
                             <TableCell>{book.quantity}</TableCell>
-                            <TableCell>{book.price}</TableCell>
-                            <TableCell>{book.total}</TableCell>
+                            <TableCell> $ {book.price}</TableCell>
+                            <TableCell>$ {book.total}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
                   </TableContainer>
-                  <Box sx={{ m: 2, mb: 5 }}>
+                  <Box sx={{ ml: 4, maxWidth: "500px" }}>
                     <p>
-                      <b>Status:</b> {order.status}
+                      <b>Status:</b>{" "}
+                      <span
+                        style={{
+                          color:
+                            order.status === "Processing" ||
+                            order.status === "Shipped"
+                              ? "green"
+                              : "red",
+                        }}
+                      >
+                        {order.status}
+                      </span>
                     </p>
+
                     <p>
-                      <b>Total Amount:</b> {order.totalAmount}
+                      <b>Total Amount:</b> $ {order.totalAmount}
                     </p>
                     <p>
                       <b>Shipping Address:</b> {order.shippingAddress}
@@ -85,19 +109,27 @@ function OrderList() {
                       <b>Created at:</b> {formatDateTime(order.createdAt)}
                     </p>
                   </Box>
-                  <Box sx={{ flexGrow: 1 }} />
-                  <Box sx={{ display: "flex", justifyContent: "center" }}>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      maxWidth: "500px",
+                      mr: 3,
+                    }}
+                  >
                     <Button
                       variant="contained"
                       color="primary"
-                      sx={{ width: 150 }}
+                      sx={{ width: 150, height: 40, alignSelf: "center" }}
+                      onClick={() => handleCancel(order._id)}
                     >
                       Cancel
                     </Button>
                   </Box>
-
-                  <hr style={{ marginTop: "16px", marginBottom: "16px" }} />
-                </div>
+                </Box>
+                <hr style={{ marginTop: "16px", marginBottom: "16px" }} />
               </Box>
             ))}
           </Box>

@@ -42,6 +42,24 @@ export const getCart = (userId) => async (dispatch) => {
   }
 };
 
+export const orderCart =
+  (userId, cart, shippingAddress) => async (dispatch) => {
+    const checkedBooks = cart.filter((item) => item.checked);
+    try {
+      const response = await apiService.post(`/orders/${userId}`, {
+        books: checkedBooks,
+        shippingAddress,
+      });
+      toast.success(response.message);
+      const responseAgain = await apiService.get(`/carts/${userId}`);
+      const updatedCart = await fetchBookNames(responseAgain.data);
+      dispatch(slice.actions.updateCart(updatedCart));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      toast.error(error.message);
+    }
+  };
+
 export const addToCart =
   (userId, bookId, quantity = 1, price, isBookNotInCart) =>
   async (dispatch) => {
@@ -77,6 +95,7 @@ const fetchBookNames = async (cartItems) => {
         return {
           ...item,
           bookName,
+          checked: false,
         };
       } catch (error) {
         console.error(error);
@@ -129,6 +148,14 @@ export const decreaseQuantity =
     }
   };
 
-export const toggleCheckbox = (number) => async (dispatch) => {};
+export const toggleCheckbox = (bookId) => (dispatch, getState) => {
+  const { cart } = getState().cart;
+
+  const updatedCart = cart.map((item) =>
+    item.bookId === bookId ? { ...item, checked: !item.checked } : item
+  );
+
+  dispatch(slice.actions.updateCart(updatedCart));
+};
 
 export default slice.reducer;

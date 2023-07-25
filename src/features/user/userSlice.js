@@ -41,9 +41,12 @@ export const getUser = (userId) => async (dispatch) => {
 };
 
 export const updateUser = (userData, userId) => async (dispatch) => {
+  dispatch(slice.actions.startLoading());
   try {
     await apiService.put(`/users/${userId}`, userData);
     toast.success("Update user profile successfully");
+    const response = await apiService.get(`/users/${userId}`);
+    dispatch(slice.actions.getUserSuccess(response.data));
   } catch (error) {
     dispatch(slice.actions.hasError(error));
     toast.error(error.message);

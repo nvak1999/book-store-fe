@@ -27,6 +27,7 @@ const slice = createSlice({
 });
 
 export const getOrder = (userId) => async (dispatch) => {
+  dispatch(slice.actions.startLoading());
   try {
     const response = await apiService.get(`/orders/${userId}`);
     dispatch(slice.actions.getOrderSuccess(response.data));
@@ -36,4 +37,17 @@ export const getOrder = (userId) => async (dispatch) => {
   }
 };
 
+export const cancelOrder = (userId, orderId) => async (dispatch) => {
+  try {
+    const response = await apiService.put(`/orders/${userId}/${orderId}`, {
+      status: "Cancelled",
+    });
+    const responseAgain = await apiService.get(`/orders/${userId}`);
+    dispatch(slice.actions.getOrderSuccess(responseAgain.data));
+    toast.success(response.message);
+  } catch (error) {
+    dispatch(slice.actions.hasError(error));
+    toast.error(error.message);
+  }
+};
 export default slice.reducer;

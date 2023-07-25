@@ -5,6 +5,7 @@ import {
   increaseQuantity,
   decreaseQuantity,
   toggleCheckbox,
+  orderCart,
 } from "./cartSlice";
 import LoadingScreen from "../../components/LoadingScreen";
 import { useParams } from "react-router-dom";
@@ -25,10 +26,13 @@ import {
 } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import useAuth from "../../hooks/useAuth";
+import { toast } from "react-toastify";
 
 function CartList() {
   const { cart, isLoading } = useSelector((state) => state.cart);
   const { userId } = useParams();
+  const { user } = useAuth();
   const dispatch = useDispatch();
   const theme = useTheme();
   const isExtraSmallScreen = useMediaQuery(theme.breakpoints.down("xs"));
@@ -38,8 +42,8 @@ function CartList() {
   }, [dispatch, userId]);
 
   useEffect(() => {
-    console.log(cart);
-  }, [cart]);
+    console.log("hello", user);
+  }, [user]);
 
   const handleIncreaseQuantity = (bookId, quantity, price) => {
     dispatch(increaseQuantity(userId, bookId, quantity, price));
@@ -51,6 +55,23 @@ function CartList() {
 
   const handleToggleCheckbox = (bookId) => {
     dispatch(toggleCheckbox(bookId));
+    console.log(user);
+  };
+
+  const handleOrder = () => {
+    const checkedBooks = cart.filter((item) => item.checked);
+
+    if (!user.address || !user.city || !user.state || !user.zipcode) {
+      toast.error("Please update your profile address.");
+      return;
+    }
+
+    if (checkedBooks.length > 0) {
+      const shippingAddress = `${user.address}, ${user.state}, ${user.city}, ${user.zipcode}`;
+      dispatch(orderCart(userId, checkedBooks, shippingAddress));
+    } else {
+      toast.error("Please select at least one book to order.");
+    }
   };
 
   return (
@@ -193,7 +214,12 @@ function CartList() {
               fontSize: isExtraSmallScreen ? "0.8rem" : "1rem",
             }}
           >
-            <Button variant="contained" color="primary" sx={{ width: 150 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ width: 150 }}
+              onClick={handleOrder}
+            >
               Order
             </Button>
           </Box>

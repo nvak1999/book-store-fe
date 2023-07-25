@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUser, updateUser } from "./userSlice";
 import { useParams } from "react-router-dom";
 import LoadingScreen from "../../components/LoadingScreen";
+import { toast } from "react-toastify";
 
 function UserProfile() {
   let { user, isLoading } = useSelector((state) => state.user);
@@ -26,6 +27,7 @@ function UserProfile() {
 
   useEffect(() => {
     setUserData(user);
+    console.log(user);
   }, [user]);
 
   const handleChange = (e) => {
@@ -47,8 +49,25 @@ function UserProfile() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Check if any required field is missing or empty
+    const requiredFields = [
+      "name",
+      "email",
+      "address",
+      "city",
+      "state",
+      "zipcode",
+    ];
+    const missingFields = requiredFields.filter((field) => !userData[field]);
+
+    if (missingFields.length > 0) {
+      toast.error("Please fill in all required fields.");
+      return; // Return early, don't proceed with the update
+    }
+
+    // If all required fields are filled, proceed with updating the user profile
     dispatch(updateUser(userData, userId));
-    dispatch(getUser(userId));
   };
 
   return (
@@ -77,7 +96,7 @@ function UserProfile() {
               <TextField
                 label="Name"
                 name="name"
-                value={userData.name}
+                value={userData.name || ""}
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
@@ -85,7 +104,7 @@ function UserProfile() {
               <TextField
                 label="Email"
                 name="email"
-                value={userData.email}
+                value={userData.email || ""}
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
@@ -107,7 +126,7 @@ function UserProfile() {
                 label="Birthday"
                 name="birthday"
                 type="date"
-                value={userData.birthday}
+                value={userData.birthday || ""}
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
@@ -118,7 +137,7 @@ function UserProfile() {
               <TextField
                 label="Address"
                 name="address"
-                value={userData.address}
+                value={userData.address || ""}
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
@@ -126,7 +145,7 @@ function UserProfile() {
               <TextField
                 label="City"
                 name="city"
-                value={userData.city}
+                value={userData.city || ""}
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
@@ -134,7 +153,7 @@ function UserProfile() {
               <TextField
                 label="State"
                 name="state"
-                value={userData.state}
+                value={userData.state || ""}
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
@@ -142,7 +161,7 @@ function UserProfile() {
               <TextField
                 label="Zipcode"
                 name="zipcode"
-                value={userData.zipcode}
+                value={userData.zipcode || ""}
                 onChange={handleChange}
                 fullWidth
                 margin="normal"
