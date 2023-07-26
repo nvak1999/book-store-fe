@@ -8,6 +8,8 @@ import useAuth from "../hooks/useAuth";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { Menu, MenuItem, Typography } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import { REACT_APP_ADMIN_ID } from "../app/config";
 
 function MainHeader() {
   const { user, logout } = useAuth();
@@ -43,20 +45,39 @@ function MainHeader() {
             <Logo />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          <RouterLink
-            to={`cart/${user._id}`}
-            style={{ textDecoration: "none", color: "black" }}
-          >
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
+          {user._id !== REACT_APP_ADMIN_ID && (
+            <RouterLink
+              to={`cart/${user._id}`}
+              style={{ textDecoration: "none", color: "black" }}
             >
-              <ShoppingCartOutlinedIcon />
-            </IconButton>
-          </RouterLink>
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                sx={{ mr: 2 }}
+              >
+                <ShoppingCartOutlinedIcon />
+              </IconButton>
+            </RouterLink>
+          )}
+
+          {user._id === REACT_APP_ADMIN_ID && (
+            <RouterLink
+              to={`admin/${user._id}`}
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                sx={{ mr: 2 }}
+              >
+                <SupervisorAccountIcon />
+              </IconButton>
+            </RouterLink>
+          )}
           {
             <div>
               <Typography
@@ -91,20 +112,24 @@ function MainHeader() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem
-                  to={`order/${user._id}`}
-                  component={RouterLink}
-                  onClick={handleClose}
-                >
-                  Order
-                </MenuItem>
-                <MenuItem
-                  to={`user/${user._id}`}
-                  component={RouterLink}
-                  onClick={handleClose}
-                >
-                  Profile
-                </MenuItem>
+                {user._id !== REACT_APP_ADMIN_ID && (
+                  <MenuItem
+                    to={`order/${user._id}`}
+                    component={RouterLink}
+                    onClick={handleClose}
+                  >
+                    Order
+                  </MenuItem>
+                )}
+                {user._id !== REACT_APP_ADMIN_ID && (
+                  <MenuItem
+                    to={`user/${user._id}`}
+                    component={RouterLink}
+                    onClick={handleClose}
+                  >
+                    Profile
+                  </MenuItem>
+                )}
 
                 <MenuItem onClick={handleLogout}>Log out</MenuItem>
               </Menu>

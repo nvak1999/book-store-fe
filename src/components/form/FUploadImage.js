@@ -14,7 +14,10 @@ function FUploadImage({ name, ...other }) {
 
         return (
           <UploadSingleFile
-            accept="image/*"
+            accept={{
+              "image/png": [".png"],
+              "image/jpeg": [".jpg", ".jpeg"],
+            }}
             file={field.value}
             error={checkError}
             helperText={
