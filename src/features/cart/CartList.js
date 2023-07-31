@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getCart,
@@ -23,10 +23,11 @@ import {
   useTheme,
   useMediaQuery,
   Divider,
+  Modal,
+  TextField,
 } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-
 import { toast } from "react-toastify";
 import { getUser } from "../user/userSlice";
 
@@ -34,7 +35,6 @@ function CartList() {
   const { cart, isLoading } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.user);
   const { userId } = useParams();
-
   const dispatch = useDispatch();
   const theme = useTheme();
   const isExtraSmallScreen = useMediaQuery(theme.breakpoints.down("xs"));
@@ -47,10 +47,6 @@ function CartList() {
     dispatch(getCart(userId));
   }, [dispatch, userId]);
 
-  useEffect(() => {
-    console.log("hello", user);
-  }, [user]);
-
   const handleIncreaseQuantity = (bookId, quantity, price) => {
     dispatch(increaseQuantity(userId, bookId, quantity, price));
   };
@@ -61,7 +57,22 @@ function CartList() {
 
   const handleToggleCheckbox = (bookId) => {
     dispatch(toggleCheckbox(bookId));
-    console.log(user);
+  };
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [shippingAddress, setShippingAddress] = useState("");
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+    const address = user.address || "";
+    const city = user.city || "";
+    const state = user.state || "";
+    const zipcode = user.zipcode || "";
+    setShippingAddress(`${address}, ${city}, ${state}, ${zipcode}`);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
   };
 
   const handleOrder = () => {
@@ -74,13 +85,26 @@ function CartList() {
     } else if (checkedBooks.length === 0) {
       toast.error("Please select at least one book to order.");
     } else {
-      if (!user.address || !user.city || !user.state || !user.zipcode) {
-        toast.error("Please update your profile address.");
-        return;
-      } else {
-        const shippingAddress = `${user.address}, ${user.state}, ${user.city}, ${user.zipcode}`;
-        dispatch(orderCart(userId, checkedBooks, shippingAddress));
-      }
+      handleModalOpen();
+    }
+  };
+
+  const handlePlaceOrder = () => {
+    const checkedBooks = cart.filter((item) => item.checked);
+    if (!shippingAddress.trim()) {
+      toast.error("Please enter a valid shipping address.");
+      return;
+    }
+
+    if (cart.length === 0) {
+      toast.error(
+        "Your cart is empty. Please add books to your cart before placing an order."
+      );
+    } else if (checkedBooks.length === 0) {
+      toast.error("Please select at least one book to order.");
+    } else {
+      dispatch(orderCart(userId, checkedBooks, shippingAddress));
+      handleModalClose();
     }
   };
 
@@ -235,6 +259,77 @@ function CartList() {
           </Box>
         </Box>
       )}
+
+      <Modal
+        open={isModalOpen}
+        onClose={handleModalClose}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh",
+          }}
+        >
+          <Box
+            sx={{
+              width: "80%",
+              maxWidth: 500,
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 0,
+            }}
+          >
+            <Typography variant="h6" id="modal-title" gutterBottom>
+              <Box sx={{ textAlign: "center" }}>
+                <b> CHECK OUT</b>
+              </Box>
+            </Typography>
+            <Typography gutterBottom>
+              <strong>Name:</strong> {user.name}
+            </Typography>
+            <Typography gutterBottom>
+              <strong>Checked Books:</strong>
+            </Typography>
+            {cart
+              .filter((item) => item.checked)
+              .map((book) => (
+                <Typography key={book.bookId}>
+                  <b>{book.bookName} </b>, <b> price:</b> {book.price} ,
+                  <b> quantity:</b> {book.quantity}
+                </Typography>
+              ))}
+            <Typography gutterBottom>
+              <strong>Shipping Address:</strong>
+            </Typography>
+            <TextField
+              multiline
+              rows={2}
+              fullWidth
+              value={shippingAddress}
+              onChange={(e) => setShippingAddress(e.target.value)}
+              variant="outlined"
+              sx={{ mb: 2 }}
+            />
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+              <Button onClick={handleModalClose} sx={{ mr: 2 }}>
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handlePlaceOrder}
+              >
+                Place Order
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
     </div>
   );
 }

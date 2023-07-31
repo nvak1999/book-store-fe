@@ -248,7 +248,7 @@ function BookSingle() {
                     color="primary"
                     onClick={handleAddToCart}
                   >
-                    "Add to cart"
+                    Add to cart
                   </Button>
                 </Box>
               </Card>
@@ -261,10 +261,3 @@ function BookSingle() {
 }
 
 export default BookSingle;
-
-// sx={{
-//   width: "100%",
-//   maxWidth: 360,
-//   minWidth: 220,
-//   height: "100%",
-// }}

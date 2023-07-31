@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { getOrder, cancelOrder, deleteOrder } from "./orderSlice";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,7 @@ import {
   Box,
   Typography,
   Button,
+  Modal,
 } from "@mui/material";
 
 function OrderList() {
@@ -32,18 +33,36 @@ function OrderList() {
     return format(new Date(dateTime), "EEEE, MMMM-d-yyyy, HH:mm:ss");
   };
 
+  const handleOpenModal = (orderId, type) => {
+    setSelectedOrderId(orderId);
+    setActionType(type);
+    setModalOpen(true);
+  };
+
   const handleCancel = (orderId) => {
-    dispatch(cancelOrder(userId, orderId));
-    dispatch(getOrder(userId));
+    handleOpenModal(orderId, "cancel");
   };
 
   const handleDelete = (orderId) => {
-    dispatch(deleteOrder(userId, orderId));
+    handleOpenModal(orderId, "delete");
+  };
+
+  const handleConfirmAction = () => {
+    if (actionType === "cancel") {
+      dispatch(cancelOrder(userId, selectedOrderId));
+    } else if (actionType === "delete") {
+      dispatch(deleteOrder(userId, selectedOrderId));
+    }
     dispatch(getOrder(userId));
+    setModalOpen(false);
   };
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [actionType, setActionType] = useState(null);
 
   return (
     <div>
@@ -165,6 +184,53 @@ function OrderList() {
           </Box>
         </div>
       )}
+
+      <Modal
+        open={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh",
+          }}
+        >
+          <Box
+            sx={{
+              width: "80%",
+              maxWidth: 500,
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              p: 4,
+              borderRadius: 1,
+            }}
+          >
+            <Typography variant="h6" id="modal-title" gutterBottom>
+              {actionType === "cancel" ? "Cancel Order" : "Delete Order"}
+            </Typography>
+            <Typography variant="body1" id="modal-description" gutterBottom>
+              Are you sure you want to{" "}
+              {actionType === "cancel" ? "cancel" : "delete"} this order?
+            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+              <Button onClick={() => setModalOpen(false)} sx={{ mr: 2 }}>
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleConfirmAction}
+              >
+                {actionType === "cancel" ? "Cancel" : "Delete"}
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
     </div>
   );
 }
