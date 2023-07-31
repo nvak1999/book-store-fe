@@ -51,9 +51,9 @@ function BookSingle() {
     dispatch(handleChangeReview(event.target.value));
   };
 
-  const handleSendButtonClick = () => {
-    dispatch(sendReview(user._id, user.name, bookId, review));
-    dispatch(getSingleBookAgain(bookId, user._id));
+  const handleSendButtonClick = async () => {
+    await dispatch(sendReview(user._id, user.name, bookId, review));
+    await dispatch(getSingleBookAgain(bookId, user._id));
   };
 
   return (
