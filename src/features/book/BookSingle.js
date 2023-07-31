@@ -120,18 +120,19 @@ function BookSingle() {
                     {book.name}
                   </Typography>
                   <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-                    <Typography
-                      variant="subtitle1"
-                      component="div"
-                      gutterBottom
-                    >
-                      Categories:
-                    </Typography>
-                    <Box sx={{ display: "flex", ml: 1 }}>
+                    <Box sx={{ display: "flex", ml: 0.5, flexWrap: "wrap" }}>
+                      <Typography
+                        variant="subtitle1"
+                        component="div"
+                        gutterBottom
+                        sx={{ marginRight: 0.5, marginBottom: 0.5 }}
+                      >
+                        Categories:
+                      </Typography>
                       {book.categories?.map((category, index) => (
                         <Chip
                           key={index}
-                          sx={{ marginRight: 1, marginBottom: 1 }}
+                          sx={{ marginRight: 0.5, marginBottom: 0.5 }}
                           label={category}
                           variant="outlined"
                           color="primary"

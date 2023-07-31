@@ -40,9 +40,8 @@ function BookList() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getBooks(page, search));
     dispatch(getCategories());
-  }, [dispatch, page, search]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (category !== "") {
@@ -52,9 +51,6 @@ function BookList() {
     }
   }, [dispatch, category, page, search]);
 
-  useEffect(() => {
-    console.log("asD", books);
-  }, [books]);
   const handleChange_page = (event, value) => {
     dispatch(handleChangePage(value));
   };

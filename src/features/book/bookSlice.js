@@ -25,13 +25,16 @@ const slice = createSlice({
   reducers: {
     startLoading(state) {
       state.isLoading = true;
+      state.books = [];
+    },
+    endLoading(state) {
+      state.isLoading = false;
     },
     hasError(state, action) {
       state.isLoading = false;
       state.errors = action.payload;
     },
     getBooksSuccess(state, action) {
-      state.isLoading = false;
       state.errors = null;
       state.books = action.payload.books;
       state.totalPages = action.payload.totalPages;
@@ -90,7 +93,8 @@ export const getBooks = (page, search) => async (dispatch) => {
     const response = await apiService.get(
       `/books?page=${page}&limit=${initialState.limit}&search=${search}`
     );
-    dispatch(slice.actions.getBooksSuccess(response.data));
+    await dispatch(slice.actions.getBooksSuccess(response.data));
+    await dispatch(slice.actions.endLoading());
   } catch (error) {
     dispatch(slice.actions.hasError(error));
     toast.error(error.message);
