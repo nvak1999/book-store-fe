@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
-import { getOrder, cancelOrder } from "./orderSlice";
+import { getOrder, cancelOrder, deleteOrder } from "./orderSlice";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingScreen from "../../components/LoadingScreen";
 import { format } from "date-fns";
+import { useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import {
   Table,
   TableBody,
@@ -34,6 +36,14 @@ function OrderList() {
     dispatch(cancelOrder(userId, orderId));
     dispatch(getOrder(userId));
   };
+
+  const handleDelete = (orderId) => {
+    dispatch(deleteOrder(userId, orderId));
+    dispatch(getOrder(userId));
+  };
+
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <div>
@@ -123,17 +133,28 @@ function OrderList() {
                     <Box
                       sx={{
                         display: "flex",
-                        justifyContent: "center",
+                        flexDirection: isSmallScreen ? "row" : "column",
                         alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
                       <Button
                         variant="contained"
                         color="primary"
-                        sx={{ width: 150, height: 40 }}
+                        sx={{ width: 145, height: 40, m: 1 }}
                         onClick={() => handleCancel(order._id)}
+                        disabled={order.status === "Processing" ? false : true}
                       >
                         Cancel
+                      </Button>
+                      <Button
+                        disabled={order.status === "Processing" ? true : false}
+                        variant="contained"
+                        color="primary"
+                        sx={{ width: 145, height: 40, m: 1 }}
+                        onClick={() => handleDelete(order._id)}
+                      >
+                        Delete
                       </Button>
                     </Box>
                   </Box>

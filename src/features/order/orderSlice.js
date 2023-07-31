@@ -50,4 +50,17 @@ export const cancelOrder = (userId, orderId) => async (dispatch) => {
     toast.error(error.message);
   }
 };
+
+export const deleteOrder = (userId, orderId) => async (dispatch) => {
+  try {
+    const response = await apiService.delete(`/orders/${userId}/${orderId}`);
+    const responseAgain = await apiService.get(`/orders/${userId}`);
+    dispatch(slice.actions.getOrderSuccess(responseAgain.data));
+    toast.success(response.message);
+  } catch (error) {
+    dispatch(slice.actions.hasError(error));
+    toast.error(error.message);
+  }
+};
+
 export default slice.reducer;
