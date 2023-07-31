@@ -45,6 +45,7 @@ export const getCart = (userId) => async (dispatch) => {
 export const orderCart =
   (userId, cart, shippingAddress) => async (dispatch) => {
     const checkedBooks = cart.filter((item) => item.checked);
+
     try {
       const response = await apiService.post(`/orders/${userId}`, {
         books: checkedBooks,

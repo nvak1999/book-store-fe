@@ -90,7 +90,7 @@ function CartList() {
     }
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     const checkedBooks = cart.filter((item) => item.checked);
     if (!shippingAddress.trim()) {
       toast.error("Please enter a valid shipping address.");
@@ -104,9 +104,9 @@ function CartList() {
     } else if (checkedBooks.length === 0) {
       toast.error("Please select at least one book to order.");
     } else {
-      dispatch(orderCart(userId, checkedBooks, shippingAddress));
+      await dispatch(orderCart(userId, checkedBooks, shippingAddress));
       handleModalClose();
-      navigate(`/order/${user._id}`);
+      await navigate(`/order/${user._id}`);
     }
   };
 
