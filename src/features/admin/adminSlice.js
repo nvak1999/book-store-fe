@@ -6,10 +6,11 @@ import { cloudinaryUpload } from "../../utils/cloudinary";
 const initialState = {
   isLoading: false,
   error: null,
+  categories: null,
 };
 
 const slice = createSlice({
-  name: "post",
+  name: "admin",
   initialState,
   reducers: {
     startLoading(state) {
@@ -20,6 +21,11 @@ const slice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    getAllCategories(state, action) {
+      state.isLoading = false;
+      state.errors = null;
+      state.categories = action.payload;
+    },
   },
 });
 
@@ -27,16 +33,31 @@ export const createBook = (data) => async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
     const imageUrl = await cloudinaryUpload(data.img);
-    await apiService.post("/books", {
+    const response = await apiService.post("/books", {
       author: data.author,
       name: data.name,
       price: data.price,
       publicationDate: data.publicationDate,
       img: imageUrl,
     });
+    await apiService.post("/bookCategory", {
+      bookId: response.data._id,
+      categoryIds: data.categories,
+    });
     toast.success("Book created successfully");
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
+  }
+};
+
+export const getCategories = () => async (dispatch) => {
+  dispatch(slice.actions.startLoading());
+  try {
+    const response = await apiService.get(`/categories`);
+    dispatch(slice.actions.getAllCategories(response.data));
+  } catch (error) {
+    dispatch(slice.actions.hasError(error));
     toast.error(error.message);
   }
 };

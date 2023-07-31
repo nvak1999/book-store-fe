@@ -95,7 +95,7 @@ function MainHeader() {
                   },
                 }}
               >
-                {user.name.slice(0, 8).toUpperCase()}
+                {user.name.toUpperCase()}
               </Typography>
 
               <Menu

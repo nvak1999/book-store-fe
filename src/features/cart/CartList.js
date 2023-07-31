@@ -30,6 +30,7 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { toast } from "react-toastify";
 import { getUser } from "../user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 function CartList() {
   const { cart, isLoading } = useSelector((state) => state.cart);
@@ -58,7 +59,7 @@ function CartList() {
   const handleToggleCheckbox = (bookId) => {
     dispatch(toggleCheckbox(bookId));
   };
-
+  const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
   const [shippingAddress, setShippingAddress] = useState("");
 
@@ -105,6 +106,7 @@ function CartList() {
     } else {
       dispatch(orderCart(userId, checkedBooks, shippingAddress));
       handleModalClose();
+      navigate(`/order/${user._id}`);
     }
   };
 
@@ -303,7 +305,7 @@ function CartList() {
                   <b> quantity:</b> {book.quantity}
                 </Typography>
               ))}
-            <Typography gutterBottom>
+            <Typography gutterBottom sx={{ mt: 1 }}>
               <strong>Shipping Address:</strong>
             </Typography>
             <TextField

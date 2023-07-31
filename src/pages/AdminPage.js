@@ -23,7 +23,7 @@ function AdminPage() {
             aria-label="lab API tabs example"
           >
             <Tab label="Add Book" value="1" />
-            <Tab label="Manager Order" value="2" />
+            <Tab label="Order Manager " value="2" />
           </TabList>
         </Box>
         <TabPanel value="1">
