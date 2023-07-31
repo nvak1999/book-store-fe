@@ -46,12 +46,15 @@ function BookList() {
 
   useEffect(() => {
     if (category !== "") {
-      dispatch(getSingleCategory(category));
+      dispatch(getSingleCategory(category, page, search));
     } else {
       dispatch(getBooks(page, search));
     }
   }, [dispatch, category, page, search]);
 
+  useEffect(() => {
+    console.log("asD", books);
+  }, [books]);
   const handleChange_page = (event, value) => {
     dispatch(handleChangePage(value));
   };

@@ -50,6 +50,7 @@ const slice = createSlice({
     },
     changeCategory(state, action) {
       state.category = action.payload;
+      state.page = 1;
     },
     getAllCategories(state, action) {
       state.isLoading = false;
@@ -59,7 +60,8 @@ const slice = createSlice({
     getCategoryById(state, action) {
       state.isLoading = false;
       state.errors = null;
-      state.books = action.payload;
+      state.books = action.payload.books;
+      state.totalPages = action.payload.totalPages;
     },
     changeSearchInput(state, action) {
       state.isLoading = false;
@@ -139,11 +141,13 @@ export const getCategories = () => async (dispatch) => {
   }
 };
 
-export const getSingleCategory = (id) => async (dispatch) => {
+export const getSingleCategory = (id, page, search) => async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
-    const response = await apiService.get(`/categories/${id}`);
-    dispatch(slice.actions.getCategoryById(response.data.books));
+    const response = await apiService.get(
+      `/categories/${id}?page=${page}&limit=${initialState.limit}&search=${search}`
+    );
+    dispatch(slice.actions.getCategoryById(response.data));
   } catch (error) {
     dispatch(slice.actions.hasError(error));
     toast.error(error.message);
