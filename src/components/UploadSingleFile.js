@@ -9,7 +9,7 @@ const DropZoneStyle = styled("div")(({ theme }) => ({
   outline: "none",
   overflow: "hidden",
   position: "relative",
-  height: 200,
+  height: 450,
   padding: theme.spacing(3, 1),
   borderRadius: theme.shape.borderRadius,
   transition: theme.transitions.create("padding"),

@@ -26,6 +26,7 @@ const slice = createSlice({
     startLoading(state) {
       state.isLoading = true;
       state.books = [];
+      state.book = "";
     },
     endLoading(state) {
       state.isLoading = false;
@@ -152,6 +153,16 @@ export const getSingleCategory = (id, page, search) => async (dispatch) => {
       `/categories/${id}?page=${page}&limit=${initialState.limit}&search=${search}`
     );
     dispatch(slice.actions.getCategoryById(response.data));
+  } catch (error) {
+    dispatch(slice.actions.hasError(error));
+    toast.error(error.message);
+  }
+};
+
+export const deleteBook = (bookId) => async (dispatch) => {
+  try {
+    await apiService.delete(`/books/${bookId}`);
+    toast.success("Deleted book sucssess");
   } catch (error) {
     dispatch(slice.actions.hasError(error));
     toast.error(error.message);

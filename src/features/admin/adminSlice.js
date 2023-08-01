@@ -51,6 +51,26 @@ export const createBook = (data) => async (dispatch) => {
   }
 };
 
+export const updateBook = (data, bookId) => async (dispatch) => {
+  try {
+    const imageUrl = await cloudinaryUpload(data.img);
+    await apiService.put(`/books/${bookId}`, {
+      author: data.author,
+      name: data.name,
+      price: data.price,
+      publicationDate: data.publicationDate,
+      img: imageUrl,
+    });
+    await apiService.put(`/bookCategory/${bookId}`, {
+      categoryIds: data.categories,
+    });
+    toast.success("Book update successfully");
+  } catch (error) {
+    dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
+  }
+};
+
 export const getCategories = () => async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {

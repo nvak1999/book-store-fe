@@ -27,7 +27,7 @@ function AdminPage() {
           </TabList>
         </Box>
         <TabPanel value="1">
-          <BookForm />
+          <BookForm book isUpdate={false} />
         </TabPanel>
         <TabPanel value="2">
           <ManagerOrder />

@@ -12,30 +12,41 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { createBook, getCategories } from "./adminSlice";
+import { createBook, getCategories, updateBook } from "./adminSlice";
+import { getSingleBook } from "../book/bookSlice";
 import { LoadingButton } from "@mui/lab";
+import useAuth from "../../hooks/useAuth";
+import { format } from "date-fns";
 
 const yupSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   author: Yup.string().required("Author is required"),
-  price: Yup.number().required("Price is required"),
+  price: Yup.number()
+    .required("Price is required")
+    .positive("Price must be a positive number")
+    .nullable(),
   publicationDate: Yup.date().required("Publication date is required"),
   img: Yup.mixed().required("Image is required"),
   categories: Yup.array().min(1, "At least one category must be selected"),
 });
 
-function BookForm() {
+function BookForm({ book, isUpdate, handleCloseModal }) {
+  let formattedDate = "";
+  if (book.publicationDate) {
+    formattedDate = format(new Date(book.publicationDate), "yyyy-MM-dd");
+  }
+
   const defaultValues = {
-    name: "",
-    author: "",
-    price: "",
-    publicationDate: "",
-    img: "",
-    categories: [],
+    name: book.name ? book.name : "",
+    author: book.author || "",
+    price: book.price ? book.price : "",
+    publicationDate: formattedDate,
+    img: book.img ? book.img : "",
+    categories: book.categories ? book.categories : [],
   };
 
   const { isLoading, categories } = useSelector((state) => state.admin);
-
+  const { user } = useAuth();
   const methods = useForm({
     resolver: yupResolver(yupSchema),
     defaultValues,
@@ -77,7 +88,13 @@ function BookForm() {
     const categoryIds = selectedCategories.map((category) => category._id);
     data.categories = categoryIds;
 
-    await dispatch(createBook(data)).then(() => reset());
+    if (!isUpdate) {
+      await dispatch(createBook(data)).then(() => reset());
+    } else {
+      await dispatch(updateBook(data, book._id));
+      await dispatch(getSingleBook(book._id, user._id));
+      await handleCloseModal();
+    }
   };
 
   useEffect(() => {
@@ -102,6 +119,7 @@ function BookForm() {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                flexWrap: "wrap",
                 flexDirection: "column",
               }}
             >
@@ -114,7 +132,7 @@ function BookForm() {
                     borderColor: alpha("#919EAB", 0.32),
                   },
                   m: 1,
-                  width: 450,
+                  width: 350,
                 }}
               />
               <FTextField
@@ -126,7 +144,7 @@ function BookForm() {
                     borderColor: alpha("#919EAB", 0.32),
                   },
                   m: 1,
-                  width: 450,
+                  width: 350,
                 }}
               />
               <FTextField
@@ -139,7 +157,7 @@ function BookForm() {
                     borderColor: alpha("#919EAB", 0.32),
                   },
                   m: 1,
-                  width: 450,
+                  width: 350,
                 }}
               />
               <FTextField
@@ -152,7 +170,7 @@ function BookForm() {
                     borderColor: alpha("#919EAB", 0.32),
                   },
                   m: 1,
-                  width: 450,
+                  width: 350,
                 }}
               />
               <Box
@@ -162,7 +180,7 @@ function BookForm() {
                   alignItems: "center",
                   m: 1,
                   flexWrap: "wrap",
-                  width: 450,
+                  width: 350,
                 }}
               >
                 {categories &&
@@ -200,10 +218,11 @@ function BookForm() {
               accept={{
                 "image/png": [".png"],
                 "image/jpeg": [".jpg", ".jpeg"],
+                "image/webp": [".webp"],
               }}
               maxSize={3145728}
               onDrop={handleDrop}
-              sx={{ width: 450, height: 300, m: 0, pt: 2 }}
+              sx={{ width: 350, height: 500, pt: 2.5 }}
             />
           </Box>
 
@@ -217,10 +236,10 @@ function BookForm() {
             <LoadingButton
               type="submit"
               variant="contained"
-              size="small"
+              size="medium"
               loading={isSubmitting || isLoading}
             >
-              Upload Book
+              {isUpdate ? "Update Book" : "Upload Book"}
             </LoadingButton>
           </Box>
         </Stack>

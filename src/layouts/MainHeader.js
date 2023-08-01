@@ -9,7 +9,6 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { Menu, MenuItem, Typography } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
-import { REACT_APP_ADMIN_ID } from "../app/config";
 
 function MainHeader() {
   const { user, logout } = useAuth();
@@ -45,7 +44,7 @@ function MainHeader() {
             <Logo />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          {user._id !== REACT_APP_ADMIN_ID && (
+          {user.role !== "admin" && (
             <RouterLink
               to={`cart/${user._id}`}
               style={{ textDecoration: "none", color: "black" }}
@@ -62,7 +61,7 @@ function MainHeader() {
             </RouterLink>
           )}
 
-          {user._id === REACT_APP_ADMIN_ID && (
+          {user.role === "admin" && (
             <RouterLink
               to={`admin/${user._id}`}
               style={{ textDecoration: "none", color: "black" }}
@@ -112,7 +111,7 @@ function MainHeader() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                {user._id !== REACT_APP_ADMIN_ID && (
+                {user.role !== "admin" && (
                   <MenuItem
                     to={`order/${user._id}`}
                     component={RouterLink}
@@ -121,7 +120,7 @@ function MainHeader() {
                     Order
                   </MenuItem>
                 )}
-                {user._id !== REACT_APP_ADMIN_ID && (
+                {user.role !== "admin" && (
                   <MenuItem
                     to={`user/${user._id}`}
                     component={RouterLink}
