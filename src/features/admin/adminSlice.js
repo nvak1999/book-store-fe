@@ -113,7 +113,7 @@ export const getAllOrder = () => async (dispatch) => {
 
 export const updateOrderStatus = (orderId, status) => async (dispatch) => {
   try {
-    await apiService.put(`/orders/${orderId}`, {
+     await apiService.put(`/orders/${orderId}`, {
       status: status,
     });
     toast.success("Order status updated successfully");

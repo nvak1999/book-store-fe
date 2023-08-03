@@ -18,6 +18,7 @@ const initialState = {
   searchInput: "",
   review: "",
   totalPages: 0,
+  disableButtonSend: false,
 };
 const slice = createSlice({
   name: "book",
@@ -84,6 +85,12 @@ const slice = createSlice({
     },
     changeReview(state, action) {
       state.review = action.payload;
+    },
+    setButtonSendTrue(state) {
+      state.disableButtonSend = true;
+    },
+    setButtonSendFalse(state) {
+      state.disableButtonSend = false;
     },
   },
 });
@@ -187,8 +194,11 @@ export const handleChangeReview = (value) => (dispatch) => {
 
 export const sendReview =
   (userId, name, bookId, review) => async (dispatch) => {
-    if (!review) toast.error("Review is null. Please enter a valid review.");
-    else {
+    dispatch(slice.actions.setButtonSendTrue());
+    if (!review) {
+      toast.error("Review is null. Please enter a valid review.");
+      await dispatch(slice.actions.setButtonSendFalse());
+    } else {
       try {
         const reviewData = {
           name,
@@ -196,7 +206,8 @@ export const sendReview =
           comment: review,
         };
         await apiService.post(`/reviews/${userId}`, reviewData);
-        dispatch(slice.actions.changeReview(""));
+        await dispatch(slice.actions.changeReview(""));
+        await dispatch(slice.actions.setButtonSendFalse());
         toast.success("Leave a review successfully");
       } catch (error) {
         dispatch(slice.actions.hasError(error));
@@ -204,5 +215,25 @@ export const sendReview =
       }
     }
   };
+
+export const updateReview = (userId, data) => async (dispatch) => {
+  try {
+    const response = await apiService.put(`/reviews/${userId}`, data);
+    toast.success(response.message);
+  } catch (error) {
+    dispatch(slice.actions.hasError(error));
+    toast.error(error.message);
+  }
+};
+
+export const deleteReview = (userId, reviewId) => async (dispatch) => {
+  try {
+    const response = await apiService.delete(`/reviews/${userId}/${reviewId}`);
+    toast.success(response.message);
+  } catch (error) {
+    dispatch(slice.actions.hasError(error));
+    toast.error(error.message);
+  }
+};
 
 export default slice.reducer;

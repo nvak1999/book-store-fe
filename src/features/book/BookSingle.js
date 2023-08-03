@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { formatDistanceToNow } from "date-fns";
+
 import {
   getSingleBook,
   setiIsBookNotInCart,
   getSingleBookAgain,
-  handleChangeReview,
-  sendReview,
   deleteBook,
 } from "./bookSlice";
 import { useParams } from "react-router-dom";
@@ -19,8 +17,6 @@ import {
   Chip,
   Grid,
   Typography,
-  Divider,
-  Paper,
   Modal,
 } from "@mui/material";
 import LoadingScreen from "../../components/LoadingScreen";
@@ -30,6 +26,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import BookForm from "../admin/BookForm";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import BookComment from "./BookComment";
 
 function BookSingle() {
   const { book, isLoading, isBookNotInCart, cart, review } = useSelector(
@@ -68,15 +65,6 @@ function BookSingle() {
   const handleConfirmDelete = async () => {
     await dispatch(deleteBook(bookId));
     await navigate(`/`);
-  };
-
-  const handleTextareaChange = (event) => {
-    dispatch(handleChangeReview(event.target.value));
-  };
-
-  const handleSendButtonClick = async () => {
-    await dispatch(sendReview(user._id, user.name, bookId, review));
-    await dispatch(getSingleBookAgain(bookId, user._id));
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -204,97 +192,12 @@ function BookSingle() {
                   <Typography variant="subtitle1" component="div" gutterBottom>
                     Price: {book.price} $
                   </Typography>
-                  {user.role !== "admin" && (
-                    <div
-                      style={{
-                        overflowY: "scroll",
-                        height: "155px",
-                        border: "1px solid rgba(0, 0, 0, 0.3)",
-                      }}
-                    >
-                      {book.reviews && book.reviews.length > 0 && (
-                        <Paper elevation={0} sx={{ p: 0.5, opacity: 0.8 }}>
-                          {book.reviews.map((review, index) => (
-                            <Box
-                              key={index}
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                padding: "5px",
-                              }}
-                            >
-                              <Box sx={{}}>
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                  }}
-                                >
-                                  <Typography
-                                    variant="subtitle2"
-                                    component="div"
-                                    style={{ fontSize: "12px" }}
-                                  >
-                                    {review.name}
-                                  </Typography>
-                                  <Typography
-                                    variant="subtitle2"
-                                    component="div"
-                                    style={{ fontSize: "12px" }}
-                                  >
-                                    {formatDistanceToNow(
-                                      new Date(review.createdAt),
-                                      {
-                                        addSuffix: true,
-                                        includeSeconds: true,
-                                      }
-                                    ).replace("about ", "")}
-                                  </Typography>
-                                </Box>
-
-                                <Typography
-                                  variant="subtitle2"
-                                  component="div"
-                                  style={{ fontSize: "12px" }}
-                                >
-                                  {review.comment}
-                                </Typography>
-                                <Divider sx={{ mb: 2 }} />
-                              </Box>
-                            </Box>
-                          ))}
-                        </Paper>
-                      )}
-                    </div>
-                  )}
-                  {user.role !== "admin" && (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        mt: 1,
-                      }}
-                    >
-                      <textarea
-                        style={{
-                          width: "100%",
-                          marginRight: "5px",
-                          fontFamily: "Arial, sans-serif",
-                        }}
-                        value={review}
-                        onChange={handleTextareaChange}
-                      ></textarea>
-                      <Button
-                        onClick={handleSendButtonClick}
-                        variant="outlined"
-                        color="primary"
-                        disabled={user.role === "admin" ? true : false}
-                      >
-                        send
-                      </Button>
-                    </Box>
-                  )}
                 </CardContent>
+                <Box sx={{ m: 1, mb: 3 }}>
+                  REVIEW
+                  <BookComment user={user} book={book} />
+                </Box>
+
                 <Box
                   sx={{
                     display: "flex",
