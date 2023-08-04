@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import apiService from "../../app/apiService";
 import { cloudinaryUpload } from "../../utils/cloudinary";
+import { booksData } from "./data/booksData";
 
 const initialState = {
   isLoading: false,
@@ -113,7 +114,7 @@ export const getAllOrder = () => async (dispatch) => {
 
 export const updateOrderStatus = (orderId, status) => async (dispatch) => {
   try {
-     await apiService.put(`/orders/${orderId}`, {
+    await apiService.put(`/orders/${orderId}`, {
       status: status,
     });
     toast.success("Order status updated successfully");
@@ -123,4 +124,55 @@ export const updateOrderStatus = (orderId, status) => async (dispatch) => {
   }
 };
 
+export const importBooks = (number, categories) => async (dispatch) => {
+  const getRandomCategories = (num) => {
+    const randomCategories = [];
+    const categoryCount = categories.length;
+
+    const selectedCategoryIds = new Set();
+
+    while (
+      randomCategories.length < num &&
+      selectedCategoryIds.size < categoryCount
+    ) {
+      const randomIndex = Math.floor(Math.random() * categoryCount);
+      const randomCategoryId = categories[randomIndex]._id;
+
+      if (!selectedCategoryIds.has(randomCategoryId)) {
+        randomCategories.push(randomCategoryId);
+        selectedCategoryIds.add(randomCategoryId);
+      }
+    }
+
+    return randomCategories;
+  };
+
+  try {
+    for (let i = 0; i < number; i++) {
+      const book = booksData[i];
+      const imageUrl = book.img; // Assuming imageUrl is generated or fetched from elsewhere
+
+      // Step 1: Create the book using the API
+      const response = await apiService.post("/books", {
+        author: book.author,
+        name: book.name,
+        price: book.price,
+        publicationDate: book.publicationDate,
+        img: imageUrl,
+      });
+
+      const categoryList = getRandomCategories(
+        Math.floor(Math.random() * 4) + 1
+      );
+      console.log(categoryList);
+      await apiService.post("/bookCategory", {
+        bookId: response.data._id,
+        categoryIds: categoryList,
+      });
+    }
+    toast.success("import book successfully");
+  } catch (error) {
+    console.error("Error importing books:", error);
+  }
+};
 export default slice.reducer;

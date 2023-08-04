@@ -97,7 +97,7 @@ function BookComment({ user, book }) {
         <div
           style={{
             overflowY: "scroll",
-            height: "155px",
+            height: "100px",
             border: "1px solid rgba(0, 0, 0, 0.3)",
           }}
         >

@@ -13,7 +13,7 @@ const initialState = {
   category: "",
   selectedBook: null,
   page: 1,
-  limit: 5,
+  limit: 10,
   search: "",
   searchInput: "",
   review: "",

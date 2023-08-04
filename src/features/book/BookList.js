@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useLocation } from "react-router-dom";
+// import { useNavigate, useLocation } from "react-router-dom";
 import {
   getBooks,
   handleChangePage,
@@ -39,41 +39,41 @@ function BookList() {
     totalPages,
   } = useSelector((state) => state.book);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
+  // const navigate = useNavigate();
+  // const location = useLocation();
 
-  useEffect(() => {
-    // Parse query parameters from the URL and update the state accordingly
-    const params = new URLSearchParams(location.search);
-    const categoryParam = params.get("category");
-    const searchParam = params.get("search");
-    const pageParam = parseInt(params.get("page") || "1", 10); // Default to 1 if no page parameter is found
+  // useEffect(() => {
+  //   // Parse query parameters from the URL and update the state accordingly
+  //   const params = new URLSearchParams(location.search);
+  //   const categoryParam = params.get("category");
+  //   const searchParam = params.get("search");
+  //   const pageParam = parseInt(params.get("page") || "1", 10); // Default to 1 if no page parameter is found
 
-    // Dispatch actions to update category, search input, and page state
-    if (categoryParam) {
-      dispatch(handleChangeCategory(categoryParam));
-    }
-    if (searchParam) {
-      dispatch(handleChangInputKeyword(searchParam));
-    }
-    dispatch(handleChangePage(pageParam));
+  //   // Dispatch actions to update category, search input, and page state
+  //   if (categoryParam) {
+  //     dispatch(handleChangeCategory(categoryParam));
+  //   }
+  //   if (searchParam) {
+  //     dispatch(handleChangInputKeyword(searchParam));
+  //   }
+  //   dispatch(handleChangePage(pageParam));
 
-    // Fetch categories and books
-    dispatch(getCategories());
-  }, [dispatch, location.search]);
+  //   // Fetch categories and books
+  //   dispatch(getCategories());
+  // }, [dispatch, location.search]);
 
-  useEffect(() => {
-    // Fetch books whenever category, search input, or page changes
-    if (category !== "") {
-      dispatch(getSingleCategory(category, page, search));
-    } else {
-      dispatch(getBooks(page, search));
-    }
+  // useEffect(() => {
+  //   // Fetch books whenever category, search input, or page changes
+  //   if (category !== "") {
+  //     dispatch(getSingleCategory(category, page, search));
+  //   } else {
+  //     dispatch(getBooks(page, search));
+  //   }
 
-    // Update the URL with the new page as a query parameter
+  //   // Update the URL with the new page as a query parameter
 
-    navigate(`?page=${page}&category=${category}&search=${search}`);
-  }, [dispatch, category, page, search, navigate]);
+  //   navigate(`?page=${page}&category=${category}&search=${search}`);
+  // }, [dispatch, category, page, search, navigate]);
 
   useEffect(() => {
     dispatch(getCategories());
