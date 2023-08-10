@@ -45,6 +45,7 @@ export const createBook = (data) => async (dispatch) => {
       name: data.name,
       price: data.price,
       publicationDate: data.publicationDate,
+      description: data.description,
       img: imageUrl,
     });
     await apiService.post("/bookCategory", {
@@ -150,15 +151,15 @@ export const importBooks = (number, categories) => async (dispatch) => {
   try {
     for (let i = 0; i < number; i++) {
       const book = booksData[i];
-      const imageUrl = book.img; // Assuming imageUrl is generated or fetched from elsewhere
+      const imageUrl = book.img;
 
-      // Step 1: Create the book using the API
       const response = await apiService.post("/books", {
         author: book.author,
         name: book.name,
         price: book.price,
         publicationDate: book.publicationDate,
         img: imageUrl,
+        description: book.description,
       });
 
       const categoryList = getRandomCategories(

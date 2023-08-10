@@ -94,114 +94,115 @@ function BookComment({ user, book }) {
   return (
     <div>
       {user.role !== "admin" && (
-        <div
-          style={{
-            overflowY: "scroll",
-            height: "100px",
+        <Box
+          sx={{
+            minHeight: 200,
             border: "1px solid rgba(0, 0, 0, 0.3)",
           }}
         >
-          {book.reviews && book.reviews.length > 0 && (
-            <Paper elevation={0} sx={{ p: 0.5, opacity: 0.8 }}>
-              {book.reviews.map((review, index) => (
-                <Box
-                  key={index}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: "5px",
-                  }}
-                >
-                  <Box sx={{}}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        height: 35,
-                      }}
-                    >
-                      <Typography
-                        variant="subtitle2"
-                        component="div"
-                        style={{
-                          fontSize: "12px",
+          <Box>
+            {book.reviews && book.reviews.length > 0 && (
+              <Paper elevation={0} sx={{ p: 0.5, opacity: 0.8 }}>
+                {book.reviews.map((review, index) => (
+                  <Box
+                    key={index}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      padding: "5px",
+                    }}
+                  >
+                    <Box sx={{}}>
+                      <Box
+                        sx={{
                           display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
+                          justifyContent: "space-between",
+                          height: 35,
                         }}
                       >
-                        {review.name}
-                      </Typography>
+                        <Typography
+                          variant="subtitle2"
+                          component="div"
+                          style={{
+                            fontSize: "12px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          {review.name}
+                        </Typography>
+                        <Typography
+                          variant="subtitle2"
+                          component="div"
+                          style={{ fontSize: "12px" }}
+                          sx={{
+                            display: "flex",
+                            justifyContent: "flex-start",
+                            alignItems: "center",
+                          }}
+                        >
+                          {formatDistanceToNow(new Date(review.createdAt), {
+                            addSuffix: true,
+                            includeSeconds: true,
+                          }).replace("about ", "")}
+                          {user._id === review.userId && (
+                            <div>
+                              <Button
+                                variant="text"
+                                size="small"
+                                sx={{
+                                  minWidth: 20,
+                                  width: 20,
+                                }}
+                                onClick={handleMoreVertClick}
+                              >
+                                <MoreVertIcon />
+                              </Button>
+                              <Menu
+                                anchorEl={anchorEl}
+                                keepMounted
+                                open={Boolean(anchorEl)}
+                                onClose={handleMoreVertClose}
+                              >
+                                <MenuItem
+                                  onClick={() =>
+                                    handleEditReview(review._id, review.comment)
+                                  }
+                                >
+                                  Edit
+                                </MenuItem>
+                                <MenuItem
+                                  onClick={() =>
+                                    handleOpenDeleteModal(
+                                      review._id,
+                                      review.comment
+                                    )
+                                  }
+                                >
+                                  Delete
+                                </MenuItem>
+                              </Menu>
+                            </div>
+                          )}
+                        </Typography>
+                      </Box>
+
                       <Typography
                         variant="subtitle2"
                         component="div"
                         style={{ fontSize: "12px" }}
-                        sx={{
-                          display: "flex",
-                          justifyContent: "flex-start",
-                          alignItems: "center",
-                        }}
                       >
-                        {formatDistanceToNow(new Date(review.createdAt), {
-                          addSuffix: true,
-                          includeSeconds: true,
-                        }).replace("about ", "")}
-                        {user._id === review.userId && (
-                          <div>
-                            <Button
-                              variant="text"
-                              size="small"
-                              sx={{
-                                minWidth: 20,
-                                width: 20,
-                              }}
-                              onClick={handleMoreVertClick}
-                            >
-                              <MoreVertIcon />
-                            </Button>
-                            <Menu
-                              anchorEl={anchorEl}
-                              keepMounted
-                              open={Boolean(anchorEl)}
-                              onClose={handleMoreVertClose}
-                            >
-                              <MenuItem
-                                onClick={() =>
-                                  handleEditReview(review._id, review.comment)
-                                }
-                              >
-                                Edit
-                              </MenuItem>
-                              <MenuItem
-                                onClick={() =>
-                                  handleOpenDeleteModal(
-                                    review._id,
-                                    review.comment
-                                  )
-                                }
-                              >
-                                Delete
-                              </MenuItem>
-                            </Menu>
-                          </div>
-                        )}
+                        {review.comment}
                       </Typography>
+                      <Divider sx={{ mb: 2 }} />
                     </Box>
-
-                    <Typography
-                      variant="subtitle2"
-                      component="div"
-                      style={{ fontSize: "12px" }}
-                    >
-                      {review.comment}
-                    </Typography>
-                    <Divider sx={{ mb: 2 }} />
                   </Box>
-                </Box>
-              ))}
-            </Paper>
-          )}
-        </div>
+                ))}
+              </Paper>
+            )}
+          </Box>
+        </Box>
       )}
       {user.role !== "admin" && (
         <Box

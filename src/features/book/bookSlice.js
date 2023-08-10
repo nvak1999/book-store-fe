@@ -19,6 +19,7 @@ const initialState = {
   review: "",
   totalPages: 0,
   disableButtonSend: false,
+  priceSearch: "",
 };
 const slice = createSlice({
   name: "book",
@@ -92,14 +93,17 @@ const slice = createSlice({
     setButtonSendFalse(state) {
       state.disableButtonSend = false;
     },
+    changePriceSearch(state, action) {
+      state.priceSearch = action.payload;
+    },
   },
 });
 
-export const getBooks = (page, search) => async (dispatch) => {
+export const getBooks = (page, search, priceSearch) => async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
     const response = await apiService.get(
-      `/books?page=${page}&limit=${initialState.limit}&search=${search}`
+      `/books?page=${page}&limit=${initialState.limit}&search=${search}&priceSearch=${priceSearch}`
     );
     await dispatch(slice.actions.getBooksSuccess(response.data));
     await dispatch(slice.actions.endLoading());
@@ -153,18 +157,19 @@ export const getCategories = () => async (dispatch) => {
   }
 };
 
-export const getSingleCategory = (id, page, search) => async (dispatch) => {
-  dispatch(slice.actions.startLoading());
-  try {
-    const response = await apiService.get(
-      `/categories/${id}?page=${page}&limit=${initialState.limit}&search=${search}`
-    );
-    dispatch(slice.actions.getCategoryById(response.data));
-  } catch (error) {
-    dispatch(slice.actions.hasError(error));
-    toast.error(error.message);
-  }
-};
+export const getSingleCategory =
+  (id, page, search, priceSearch) => async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await apiService.get(
+        `/categories/${id}?page=${page}&limit=${initialState.limit}&search=${search}&priceSearch=${priceSearch}`
+      );
+      dispatch(slice.actions.getCategoryById(response.data));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      toast.error(error.message);
+    }
+  };
 
 export const deleteBook = (bookId) => async (dispatch) => {
   try {
@@ -234,6 +239,10 @@ export const deleteReview = (userId, reviewId) => async (dispatch) => {
     dispatch(slice.actions.hasError(error));
     toast.error(error.message);
   }
+};
+
+export const handleChangPriceSearch = (price) => (dispatch) => {
+  dispatch(slice.actions.changePriceSearch(price));
 };
 
 export default slice.reducer;

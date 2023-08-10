@@ -11,7 +11,14 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 
 function MainHeader() {
-  const { user, logout } = useAuth();
+  let { user, logout, isAuthenticated } = useAuth();
+  if (!user) {
+    user = {
+      role: "",
+      name: "",
+    };
+  }
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
   const handleMenu = (event) => {
@@ -77,7 +84,16 @@ function MainHeader() {
               </IconButton>
             </RouterLink>
           )}
-          {
+          {!isAuthenticated ? (
+            <Typography
+              component={RouterLink}
+              to="/login"
+              onClick={() => navigate("/login")}
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              LOGIN
+            </Typography>
+          ) : (
             <div>
               <Typography
                 onClick={handleMenu}
@@ -133,7 +149,7 @@ function MainHeader() {
                 <MenuItem onClick={handleLogout}>Log out</MenuItem>
               </Menu>
             </div>
-          }
+          )}
         </Toolbar>
       </AppBar>
     </Box>

@@ -16,6 +16,13 @@ import AdminPage from "../pages/AdminPage";
 function Router() {
   return (
     <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route element={<BlankLayout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+
       <Route
         path="/"
         element={
@@ -24,18 +31,11 @@ function Router() {
           </AuthRequire>
         }
       >
-        <Route index element={<HomePage />} />
         <Route path="user/:userId" element={<UserProfilePage />} />
         <Route path="book/:bookId" element={<SingleBookPage />} />
         <Route path="cart/:userId" element={<CartPage />} />
         <Route path="order/:userId" element={<OrderPage />} />
         <Route path="admin/:userId" element={<AdminPage />} />
-      </Route>
-
-      <Route element={<BlankLayout />}>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );

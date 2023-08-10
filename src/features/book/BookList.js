@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { useNavigate, useLocation } from "react-router-dom";
 import {
   getBooks,
   handleChangePage,
@@ -9,6 +8,7 @@ import {
   getSingleCategory,
   handleChangKeyword,
   handleChangInputKeyword,
+  handleChangPriceSearch,
 } from "./bookSlice";
 import BookCard from "./BookCard";
 import {
@@ -37,43 +37,9 @@ function BookList() {
     searchInput,
     isLoading,
     totalPages,
+    priceSearch,
   } = useSelector((state) => state.book);
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
-  // const location = useLocation();
-
-  // useEffect(() => {
-  //   // Parse query parameters from the URL and update the state accordingly
-  //   const params = new URLSearchParams(location.search);
-  //   const categoryParam = params.get("category");
-  //   const searchParam = params.get("search");
-  //   const pageParam = parseInt(params.get("page") || "1", 10); // Default to 1 if no page parameter is found
-
-  //   // Dispatch actions to update category, search input, and page state
-  //   if (categoryParam) {
-  //     dispatch(handleChangeCategory(categoryParam));
-  //   }
-  //   if (searchParam) {
-  //     dispatch(handleChangInputKeyword(searchParam));
-  //   }
-  //   dispatch(handleChangePage(pageParam));
-
-  //   // Fetch categories and books
-  //   dispatch(getCategories());
-  // }, [dispatch, location.search]);
-
-  // useEffect(() => {
-  //   // Fetch books whenever category, search input, or page changes
-  //   if (category !== "") {
-  //     dispatch(getSingleCategory(category, page, search));
-  //   } else {
-  //     dispatch(getBooks(page, search));
-  //   }
-
-  //   // Update the URL with the new page as a query parameter
-
-  //   navigate(`?page=${page}&category=${category}&search=${search}`);
-  // }, [dispatch, category, page, search, navigate]);
 
   useEffect(() => {
     dispatch(getCategories());
@@ -81,11 +47,11 @@ function BookList() {
 
   useEffect(() => {
     if (category !== "") {
-      dispatch(getSingleCategory(category, page, search));
+      dispatch(getSingleCategory(category, page, search, priceSearch));
     } else {
-      dispatch(getBooks(page, search));
+      dispatch(getBooks(page, search, priceSearch));
     }
-  }, [dispatch, category, page, search]);
+  }, [dispatch, category, page, search, priceSearch]);
 
   const handleChange_page = (event, value) => {
     dispatch(handleChangePage(value));
@@ -102,6 +68,11 @@ function BookList() {
   const handleChang_Keyword = (input) => {
     dispatch(handleChangKeyword(input));
   };
+
+  const priceOptions = [];
+  for (let price = 19.99; price <= 39.99; price += 1) {
+    priceOptions.push(price.toFixed(2));
+  }
 
   const bookGird = (
     <>
@@ -163,7 +134,7 @@ function BookList() {
           mt: 3,
         }}
       >
-        <FormControl sx={{ width: 300 }}>
+        <FormControl sx={{ width: 250 }}>
           <InputLabel id="demo-simple-select-label">Category</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -182,7 +153,24 @@ function BookList() {
             ))}
           </Select>
         </FormControl>
-
+        <FormControl sx={{ minWidth: 150, ml: 1 }}>
+          <InputLabel id="price-range-label">Price Range</InputLabel>
+          <Select
+            labelId="price-range-label"
+            id="price-range-select"
+            value={priceSearch}
+            onChange={(event) => {
+              dispatch(handleChangPriceSearch(event.target.value));
+            }}
+          >
+            <MenuItem value="">Any Price</MenuItem>
+            {priceOptions.map((price) => (
+              <MenuItem key={price} value={price}>
+                {price} $
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <Box sx={{ m: 2 }}>
           <TextField
             sx={{ height: 50, width: 180 }}
@@ -191,7 +179,13 @@ function BookList() {
             variant="outlined"
             value={searchInput}
             onChange={(event) => handleChang_InputKeyword(event)}
+            onKeyDown={(event) => {
+              if (event.keyCode === 13) {
+                handleChang_Keyword(searchInput);
+              }
+            }}
           />
+
           <Button
             sx={{ height: 55, ml: 1 }}
             variant="contained"

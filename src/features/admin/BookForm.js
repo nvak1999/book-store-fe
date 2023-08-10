@@ -42,6 +42,7 @@ function BookForm({ book, isUpdate, handleCloseModal }) {
     price: book.price ? book.price : "",
     publicationDate: formattedDate,
     img: book.img ? book.img : "",
+    description: book.description ? book.description : "",
     categories: book.categories ? book.categories : [],
   };
 
@@ -138,6 +139,18 @@ function BookForm({ book, isUpdate, handleCloseModal }) {
               <FTextField
                 name="author"
                 placeholder="Author"
+                sx={{
+                  "& fieldset": {
+                    borderWidth: `1px !important`,
+                    borderColor: alpha("#919EAB", 0.32),
+                  },
+                  m: 1,
+                  width: 350,
+                }}
+              />
+              <FTextField
+                name="description"
+                placeholder="Description"
                 sx={{
                   "& fieldset": {
                     borderWidth: `1px !important`,

@@ -27,8 +27,11 @@ import BookForm from "../admin/BookForm";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import BookComment from "./BookComment";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 function BookSingle() {
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
   const { book, isLoading, isBookNotInCart, cart, review } = useSelector(
     (state) => state.book
   );
@@ -88,212 +91,242 @@ function BookSingle() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            mt: 10,
+            flexDirection: "column",
           }}
         >
-          <Grid container spacing={2} sx={{ width: 800 }}>
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Card
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              mt: 10,
+            }}
+          >
+            <Grid container spacing={2} sx={{ width: 800 }}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
                 sx={{
-                  width: 350,
-                  height: 530,
-                }}
-              >
-                <CardMedia
-                  sx={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                  component="img"
-                  image={book.img}
-                  alt="Book Cover"
-                />
-              </Card>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <Card
-                sx={{
-                  width: 350,
-                  height: 530,
                   display: "flex",
-                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                <div
-                  style={{
+                <Card
+                  sx={{
                     width: 350,
                     height: 530,
-                    overflowY: "auto", // Enable vertical scrolling
+                  }}
+                >
+                  <CardMedia
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                    component="img"
+                    image={book.img}
+                    alt="Book Cover"
+                  />
+                </Card>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Card
+                  sx={{
+                    width: 350,
+                    height: 530,
                     display: "flex",
                     flexDirection: "column",
                   }}
                 >
-                  <CardContent>
+                  <div
+                    style={{
+                      width: 350,
+                      height: 530,
+                      overflowY: "auto",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <CardContent>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          flexDirection: "row",
+                          mb: 1,
+                        }}
+                      >
+                        <Typography variant="h5" component="div" gutterBottom>
+                          {book.name}
+                        </Typography>
+                        {user.role === "admin" && (
+                          <Button variant="text" onClick={handleOpenModal}>
+                            <EditIcon />
+                          </Button>
+                        )}
+                      </Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "flex-start",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                          <Typography
+                            variant="subtitle1"
+                            component="div"
+                            gutterBottom
+                            sx={{ marginBottom: 0.5, mr: 0.5 }}
+                          >
+                            <span style={{ fontWeight: "bold" }}>
+                              Categories:{" "}
+                            </span>
+                          </Typography>
+                          {book.categories?.map((category, index) => (
+                            <Chip
+                              key={index}
+                              sx={{ marginRight: 0.5, marginBottom: 0.5 }}
+                              label={category}
+                              size="small"
+                              variant="outlined"
+                              color="primary"
+                            />
+                          ))}
+                        </Box>
+                      </Box>
+                      <Typography
+                        variant="subtitle1"
+                        component="div"
+                        gutterBottom
+                      >
+                        <span style={{ fontWeight: "bold" }}>Author: </span>
+                        {book.author}
+                      </Typography>
+                      <Typography
+                        variant="subtitle1"
+                        component="div"
+                        gutterBottom
+                        sx={{
+                          width: "100%",
+                          textAlign: "justify",
+                        }}
+                      >
+                        <span style={{ fontWeight: "bold" }}>
+                          Description:{" "}
+                        </span>
+                        <span style={{ fontSize: "smaller" }}>
+                          {book.description}
+                        </span>
+                      </Typography>
+
+                      <Typography
+                        variant="subtitle1"
+                        component="div"
+                        gutterBottom
+                      >
+                        Publication date: {formattedDate}
+                      </Typography>
+                      <Typography
+                        variant="subtitle1"
+                        component="div"
+                        gutterBottom
+                      >
+                        Price: {book.price} $
+                      </Typography>
+                    </CardContent>
+
+                    <Box sx={{ flexGrow: 1 }} />
                     <Box
                       sx={{
                         display: "flex",
-                        justifyContent: "space-between",
-                        flexDirection: "row",
-                        mb: 1,
+                        justifyContent: "space-around",
+                        pb: 3,
                       }}
                     >
-                      <Typography variant="h5" component="div" gutterBottom>
-                        {book.name}
-                      </Typography>
+                      {user.role !== "admin" && (
+                        <Button
+                          disabled={isBookNotInCart}
+                          variant="contained"
+                          color="primary"
+                          onClick={handleAddToCart}
+                        >
+                          Add to cart
+                        </Button>
+                      )}
                       {user.role === "admin" && (
-                        <Button variant="text" onClick={handleOpenModal}>
-                          <EditIcon />
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleDelete}
+                        >
+                          Delete Book
                         </Button>
                       )}
                     </Box>
+                  </div>
+                  <Modal
+                    open={isDeleteModalOpen}
+                    onClose={handleCloseDeleteModal}
+                  >
                     <Box
                       sx={{
-                        display: "flex",
-                        justifyContent: "flex-start",
-                        alignItems: "center",
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        bgcolor: "#fff",
+                        p: 4,
+                        borderRadius: 1,
+                        width: 300,
                       }}
                     >
-                      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-                        <Typography
-                          variant="subtitle1"
-                          component="div"
-                          gutterBottom
-                          sx={{ marginBottom: 0.5, mr: 0.5 }}
+                      <Typography variant="h6" gutterBottom>
+                        Are you sure you want to delete this book?
+                      </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          mt: 2,
+                        }}
+                      >
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={handleCloseDeleteModal}
                         >
-                          Categories:
-                        </Typography>
-                        {book.categories?.map((category, index) => (
-                          <Chip
-                            key={index}
-                            sx={{ marginRight: 0.5, marginBottom: 0.5 }}
-                            label={category}
-                            size="small"
-                            variant="outlined"
-                            color="primary"
-                          />
-                        ))}
+                          Cancel
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleConfirmDelete}
+                        >
+                          Delete
+                        </Button>
                       </Box>
                     </Box>
-                    <Typography
-                      variant="subtitle1"
-                      component="div"
-                      gutterBottom
-                    >
-                      Author: {book.author}
-                    </Typography>
-                    <Typography
-                      variant="subtitle1"
-                      component="div"
-                      gutterBottom
-                    >
-                      Publication date: {formattedDate}
-                    </Typography>
-                    <Typography
-                      variant="subtitle1"
-                      component="div"
-                      gutterBottom
-                    >
-                      Price: {book.price} $
-                    </Typography>
-                  </CardContent>
-                  <Box sx={{ m: 1, mb: 3 }}>
-                    {user.role !== "admin" && "REVIEW"}
-
-                    <BookComment user={user} book={book} />
-                  </Box>
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-around",
-                      pb: 3,
-                    }}
-                  >
-                    {user.role !== "admin" && (
-                      <Button
-                        disabled={isBookNotInCart}
-                        variant="contained"
-                        color="primary"
-                        onClick={handleAddToCart}
-                      >
-                        Add to cart
-                      </Button>
-                    )}
-                    {user.role === "admin" && (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleDelete}
-                      >
-                        Delete Book
-                      </Button>
-                    )}
-                  </Box>
-                </div>
-                <Modal
-                  open={isDeleteModalOpen}
-                  onClose={handleCloseDeleteModal}
-                >
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      bgcolor: "#fff",
-                      p: 4,
-                      borderRadius: 1,
-                      width: 300,
-                    }}
-                  >
-                    <Typography variant="h6" gutterBottom>
-                      Are you sure you want to delete this book?
-                    </Typography>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        mt: 2,
-                      }}
-                    >
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={handleCloseDeleteModal}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleConfirmDelete}
-                      >
-                        Delete
-                      </Button>
-                    </Box>
-                  </Box>
-                </Modal>
-              </Card>
+                  </Modal>
+                </Card>
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
+          <Box sx={{ m: 2, mt: 4, pb: 4, width: isSmallScreen ? 350 : 750 }}>
+            {user.role !== "admin" && "REVIEW"}
+
+            <BookComment user={user} book={book} />
+          </Box>
         </Box>
       )}
 
