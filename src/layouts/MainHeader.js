@@ -51,7 +51,8 @@ function MainHeader() {
             <Logo />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          {(user.role !== "admin") & isAuthenticated && (
+
+          {(user.role !== "admin") & isAuthenticated ? (
             <RouterLink
               to={`cart/${user._id}`}
               style={{ textDecoration: "none", color: "black" }}
@@ -66,6 +67,8 @@ function MainHeader() {
                 <ShoppingCartOutlinedIcon />
               </IconButton>
             </RouterLink>
+          ) : (
+            ""
           )}
 
           {user.role === "admin" && (
@@ -87,6 +90,7 @@ function MainHeader() {
           {!isAuthenticated ? (
             <Typography
               component={RouterLink}
+              variant="h6"
               to="/login"
               onClick={() => navigate("/login")}
               style={{ textDecoration: "none", color: "black" }}
