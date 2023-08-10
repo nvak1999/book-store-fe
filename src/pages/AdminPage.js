@@ -26,7 +26,7 @@ function AdminPage() {
           >
             <Tab label="Add Book" value="1" />
             <Tab label="Order Manager " value="2" />
-            <Tab label="Import Books " value="3" />
+            {/* <Tab label="Import Books " value="3" /> */}
           </TabList>
         </Box>
         <TabPanel value="1">
