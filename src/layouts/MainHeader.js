@@ -51,7 +51,7 @@ function MainHeader() {
             <Logo />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          {user.role !== "admin" && (
+          {(user.role !== "admin") & isAuthenticated && (
             <RouterLink
               to={`cart/${user._id}`}
               style={{ textDecoration: "none", color: "black" }}
