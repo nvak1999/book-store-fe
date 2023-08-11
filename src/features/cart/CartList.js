@@ -208,13 +208,19 @@ function CartList() {
                       >
                         <KeyboardArrowLeftIcon />
                       </IconButton>
-                      <Typography
-                        sx={{
-                          fontSize: isExtraSmallScreen ? "0.8rem" : "1rem",
+
+                      <TextField
+                        value={item.quantity}
+                        InputProps={{
+                          disableUnderline: true,
+                          sx: {
+                            fontSize: isExtraSmallScreen ? "0.8rem" : "1rem",
+                            width: 80,
+                            input: { textAlign: "center" },
+                          },
                         }}
-                      >
-                        {item.quantity}
-                      </Typography>
+                        onChange={(e) => {}}
+                      />
                       <IconButton
                         size="small"
                         onClick={() =>

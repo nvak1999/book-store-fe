@@ -18,6 +18,7 @@ import {
   Box,
 } from "@mui/material";
 import { getAllOrder, updateOrderStatus } from "./adminSlice";
+import LoadingScreen from "../../components/LoadingScreen";
 
 function ManagerOrder() {
   const { isLoading, order } = useSelector((state) => state.admin);
@@ -74,7 +75,7 @@ function ManagerOrder() {
       );
     }
     await dispatch(getAllOrder());
-    setSelectedOrder(null); // Reset selectedOrder after update
+    setSelectedOrder(null);
     setModalOpen(false);
   };
 
@@ -84,7 +85,19 @@ function ManagerOrder() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <Box flexGrow={1}></Box>
+        <LoadingScreen />
+      </Box>
+    );
   }
 
   return (
