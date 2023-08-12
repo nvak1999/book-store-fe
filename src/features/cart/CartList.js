@@ -96,6 +96,10 @@ function CartList() {
     }
   };
 
+  useEffect(() => {
+    console.log(shippingAddress);
+  }, [shippingAddress]);
+
   const handlePlaceOrder = async () => {
     const checkedBooks = cart.filter((item) => item.checked);
     if (!shippingAddress.trim()) {
@@ -111,6 +115,7 @@ function CartList() {
       toast.error("Please select at least one book to order.");
     } else {
       await dispatch(orderCart(userId, checkedBooks, shippingAddress));
+      console.log("haha");
       handleModalClose();
       await navigate(`/order/${user._id}`);
     }
