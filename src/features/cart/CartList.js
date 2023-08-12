@@ -6,6 +6,7 @@ import {
   decreaseQuantity,
   toggleCheckbox,
   orderCart,
+  changeQuantity,
 } from "./cartSlice";
 import LoadingScreen from "../../components/LoadingScreen";
 import { useParams } from "react-router-dom";
@@ -31,6 +32,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { toast } from "react-toastify";
 import { getUser } from "../user/userSlice";
 import { useNavigate } from "react-router-dom";
+import PayPal from "./PayPal";
 
 function CartList() {
   const { cart, isLoading } = useSelector((state) => state.cart);
@@ -54,6 +56,10 @@ function CartList() {
 
   const handleDecreaseQuantity = (bookId, quantity, price) => {
     dispatch(decreaseQuantity(userId, bookId, quantity, price));
+  };
+
+  const handleChangQuantity = (bookId, quantity, price) => {
+    dispatch(changeQuantity(userId, bookId, quantity, price));
   };
 
   const handleToggleCheckbox = (bookId) => {
@@ -212,14 +218,23 @@ function CartList() {
                       <TextField
                         value={item.quantity}
                         InputProps={{
+                          min: 1,
+                          max: 100,
                           disableUnderline: true,
                           sx: {
                             fontSize: isExtraSmallScreen ? "0.8rem" : "1rem",
-                            width: 80,
+                            width: 55,
                             input: { textAlign: "center" },
                           },
                         }}
-                        onChange={(e) => {}}
+                        onChange={(e) => {
+                          const newQuantity = e.target.value;
+                          handleChangQuantity(
+                            item.bookId,
+                            newQuantity,
+                            item.price
+                          );
+                        }}
                       />
                       <IconButton
                         size="small"
@@ -265,6 +280,7 @@ function CartList() {
               Order
             </Button>
           </Box>
+          <PayPal />
         </Box>
       )}
 

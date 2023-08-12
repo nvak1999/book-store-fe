@@ -126,6 +126,24 @@ export const increaseQuantity =
     }
   };
 
+export const changeQuantity =
+  (userId, bookId, quantity, price) => async (dispatch) => {
+    try {
+      const bookData = {
+        bookId: bookId,
+        quantity: quantity,
+        price: price,
+      };
+      await apiService.post(`/carts/${userId}`, bookData);
+      const response = await apiService.get(`/carts/${userId}`);
+      const updatedCart = await fetchBookNames(response.data);
+      dispatch(slice.actions.updateCart(updatedCart));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      toast.error(error.message);
+    }
+  };
+
 export const decreaseQuantity =
   (userId, bookId, quantity, price) => async (dispatch) => {
     if (quantity >= 0) {
