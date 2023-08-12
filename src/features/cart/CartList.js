@@ -219,8 +219,7 @@ function CartList() {
                         value={item.quantity}
                         InputProps={{
                           min: 1,
-                          max: 100,
-                          disableUnderline: true,
+                          max: 9999,
                           sx: {
                             fontSize: isExtraSmallScreen ? "0.8rem" : "1rem",
                             width: 55,
@@ -280,7 +279,6 @@ function CartList() {
               Order
             </Button>
           </Box>
-          <PayPal />
         </Box>
       )}
 
@@ -340,17 +338,32 @@ function CartList() {
               sx={{ mb: 2 }}
             />
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-              <Button onClick={handleModalClose} sx={{ mr: 2 }}>
-                Cancel
-              </Button>
               <Button
+                fullWidth
                 variant="contained"
                 color="primary"
                 onClick={handlePlaceOrder}
+                sx={{ borderRadius: 0.5 }}
               >
-                Place Order
+                <b>Pay after recieve</b>
               </Button>
             </Box>
+            <Box sx={{ mt: 1 }}>
+              <PayPal
+                item={cart.filter((item) => item.checked)}
+                userId={userId}
+                shippingAddress={shippingAddress}
+                user={user}
+              />
+            </Box>
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={handleModalClose}
+              sx={{ mr: 2, borderRadius: 0.5 }}
+            >
+              Cancel
+            </Button>
           </Box>
         </Box>
       </Modal>

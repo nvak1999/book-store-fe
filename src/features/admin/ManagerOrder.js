@@ -114,6 +114,7 @@ function ManagerOrder() {
               <TableCell sx={{ fontWeight: "bold" }}>
                 Shipping Address
               </TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Payment methods</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
             </TableRow>
           </TableHead>
@@ -141,6 +142,11 @@ function ManagerOrder() {
 
                   <TableCell>${formatNumber(orderItem.totalAmount)}</TableCell>
                   <TableCell>{orderItem.shippingAddress}</TableCell>
+                  <TableCell>
+                    {!orderItem.paymentMethods
+                      ? "After recieve"
+                      : orderItem.paymentMethods}
+                  </TableCell>
                   <TableCell>
                     <FormControl fullWidth>
                       <Select

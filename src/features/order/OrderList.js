@@ -147,6 +147,12 @@ function OrderList() {
                       <p>
                         <b>Created at:</b> {formatDateTime(order.createdAt)}
                       </p>
+                      <p>
+                        <b>Payment methods:</b>{" "}
+                        {!order.paymentMethods
+                          ? "After recieve"
+                          : order.paymentMethods}
+                      </p>
                     </Box>
 
                     <Box
