@@ -9,8 +9,12 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { Menu, MenuItem, Typography } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getUser } from "../features/user/userSlice";
 
 function MainHeader() {
+  let { user: authUser } = useSelector((state) => state.user);
   let { user, logout, isAuthenticated } = useAuth();
   if (!user) {
     user = {
@@ -18,6 +22,13 @@ function MainHeader() {
       name: "",
     };
   }
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user._id) {
+      dispatch(getUser(user._id));
+    }
+  }, [dispatch, user._id]);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
@@ -118,7 +129,9 @@ function MainHeader() {
                   },
                 }}
               >
-                {user.name.toUpperCase()}
+                {authUser.name
+                  ? authUser.name.toUpperCase()
+                  : user.name.toUpperCase()}
               </Typography>
 
               <Menu
