@@ -239,14 +239,15 @@ function BookSingle() {
                         component="div"
                         gutterBottom
                       >
-                        Publication date: {formattedDate}
+                        <b> Publication date: </b>
+                        {formattedDate.slice(6)}
                       </Typography>
                       <Typography
                         variant="subtitle1"
                         component="div"
                         gutterBottom
                       >
-                        Price: {book.price} $
+                        <b> Price:</b> {book.price} $
                       </Typography>
                     </CardContent>
 

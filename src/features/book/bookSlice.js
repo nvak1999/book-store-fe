@@ -19,7 +19,8 @@ const initialState = {
   review: "",
   totalPages: 0,
   disableButtonSend: false,
-  priceSearch: "",
+  minPrice: 19,
+  maxPrice: 40,
 };
 const slice = createSlice({
   name: "book",
@@ -96,22 +97,34 @@ const slice = createSlice({
     changePriceSearch(state, action) {
       state.priceSearch = action.payload;
     },
+    changeMinPrice(state, action) {
+      state.minPrice = action.payload;
+    },
+    changeMaxPrice(state, action) {
+      state.maxPrice = action.payload;
+    },
   },
 });
 
-export const getBooks = (page, search, priceSearch) => async (dispatch) => {
-  dispatch(slice.actions.startLoading());
-  try {
-    const response = await apiService.get(
-      `/books?page=${page}&limit=${initialState.limit}&search=${search}&priceSearch=${priceSearch}`
-    );
-    await dispatch(slice.actions.getBooksSuccess(response.data));
-    await dispatch(slice.actions.endLoading());
-  } catch (error) {
-    dispatch(slice.actions.hasError(error));
-    toast.error(error.message);
-  }
+export const changePrice = (min, max) => (dispatch) => {
+  dispatch(slice.actions.changeMinPrice(min));
+  dispatch(slice.actions.changeMaxPrice(max));
 };
+
+export const getBooks =
+  (page, search, minPrice, maxPrice) => async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const response = await apiService.get(
+        `/books?page=${page}&limit=${initialState.limit}&search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}`
+      );
+      await dispatch(slice.actions.getBooksSuccess(response.data));
+      await dispatch(slice.actions.endLoading());
+    } catch (error) {
+      dispatch(slice.actions.hasError(error));
+      toast.error(error.message);
+    }
+  };
 
 export const setiIsBookNotInCart = (value) => (dispatch) => {
   dispatch(slice.actions.changeisBookNotInCart(value));
@@ -158,11 +171,11 @@ export const getCategories = () => async (dispatch) => {
 };
 
 export const getSingleCategory =
-  (id, page, search, priceSearch) => async (dispatch) => {
+  (id, page, search, minPrice, maxPrice) => async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
       const response = await apiService.get(
-        `/categories/${id}?page=${page}&limit=${initialState.limit}&search=${search}&priceSearch=${priceSearch}`
+        `/categories/${id}?page=${page}&limit=${initialState.limit}&search=${search}&minPrice=${minPrice}&maxPrice=${maxPrice}`
       );
       dispatch(slice.actions.getCategoryById(response.data));
     } catch (error) {

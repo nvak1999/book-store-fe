@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getBooks,
@@ -8,24 +8,26 @@ import {
   getSingleCategory,
   handleChangKeyword,
   handleChangInputKeyword,
-  handleChangPriceSearch,
+  changePrice,
 } from "./bookSlice";
 import BookCard from "./BookCard";
 import {
   Box,
-  Button,
   FormControl,
   Grid,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
   TextField,
   Typography,
 } from "@mui/material";
+
 import { Link } from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
-import SearchIcon from "@mui/icons-material/Search";
 import LoadingScreen from "../../components/LoadingScreen";
+import PricingFilter from "./PricingFilter";
+import { SearchOutlined } from "@mui/icons-material";
 
 function BookList() {
   const {
@@ -37,9 +39,11 @@ function BookList() {
     searchInput,
     isLoading,
     totalPages,
-    priceSearch,
+    minPrice,
+    maxPrice,
   } = useSelector((state) => state.book);
   const dispatch = useDispatch();
+  const [priceRange, setPriceRange] = useState([minPrice, maxPrice]);
 
   useEffect(() => {
     dispatch(getCategories());
@@ -47,11 +51,11 @@ function BookList() {
 
   useEffect(() => {
     if (category !== "") {
-      dispatch(getSingleCategory(category, page, search, priceSearch));
+      dispatch(getSingleCategory(category, page, search, minPrice, maxPrice));
     } else {
-      dispatch(getBooks(page, search, priceSearch));
+      dispatch(getBooks(page, search, minPrice, maxPrice));
     }
-  }, [dispatch, category, page, search, priceSearch]);
+  }, [dispatch, category, page, search, minPrice, maxPrice]);
 
   const handleChange_page = (event, value) => {
     dispatch(handleChangePage(value));
@@ -73,6 +77,21 @@ function BookList() {
   for (let price = 19.99; price <= 39.99; price += 1) {
     priceOptions.push(price.toFixed(2));
   }
+
+  const applyFilter = async (minPrice, maxPrice) => {
+    await dispatch(changePrice(priceRange[0], priceRange[1]));
+    await setPriceRange([minPrice, maxPrice]);
+    if (category !== "") {
+      dispatch(getSingleCategory(category, page, search, minPrice, maxPrice));
+    } else {
+      dispatch(getBooks(page, search, minPrice, maxPrice));
+    }
+    await console.log("Applying filter:", minPrice, maxPrice);
+  };
+
+  const clearFilter = () => {
+    console.log("Clearing filter");
+  };
 
   const bookGird = (
     <>
@@ -128,13 +147,13 @@ function BookList() {
         sx={{
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
+
           flexWrap: "wrap",
           m: 2,
           mt: 3,
         }}
       >
-        <FormControl sx={{ width: 250 }}>
+        <FormControl sx={{ width: 250, m: 1 }}>
           <InputLabel id="demo-simple-select-label">Category</InputLabel>
           <Select
             labelId="demo-simple-select-label"
@@ -153,47 +172,39 @@ function BookList() {
             ))}
           </Select>
         </FormControl>
-        <FormControl sx={{ minWidth: 180, m: 1 }}>
-          <InputLabel id="price-range-label">Price Range</InputLabel>
-          <Select
-            labelId="price-range-label"
-            id="price-range-select"
-            value={priceSearch}
-            onChange={(event) => {
-              dispatch(handleChangPriceSearch(event.target.value));
-            }}
-          >
-            <MenuItem value="">Any Price</MenuItem>
-            {priceOptions.map((price) => (
-              <MenuItem key={price} value={price}>
-                {price} $
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <Box sx={{ ml: 0 }}>
-          <TextField
-            sx={{ height: 50, width: 180 }}
-            id="outlined-basic"
-            label="Search"
-            variant="outlined"
-            value={searchInput}
-            onChange={(event) => handleChang_InputKeyword(event)}
-            onKeyDown={(event) => {
-              if (event.keyCode === 13) {
-                handleChang_Keyword(searchInput);
-              }
-            }}
+        <Box>
+          <PricingFilter
+            applyFilter={applyFilter}
+            clearFilter={clearFilter}
+            priceRange={priceRange}
+            setPriceRange={setPriceRange}
           />
-
-          <Button
-            sx={{ height: 55, ml: 1 }}
-            variant="contained"
-            onClick={() => handleChang_Keyword(searchInput)}
-          >
-            <SearchIcon />
-          </Button>
         </Box>
+
+        <TextField
+          sx={{ m: 1, height: 50, width: 250 }}
+          id="outlined-basic"
+          label="Search"
+          variant="outlined"
+          value={searchInput}
+          onChange={(event) => handleChang_InputKeyword(event)}
+          onKeyDown={(event) => {
+            if (event.keyCode === 13) {
+              handleChang_Keyword(searchInput);
+            }
+          }}
+          InputProps={{
+            endAdornment: (
+              <IconButton
+                onClick={(event) => {
+                  handleChang_Keyword(searchInput);
+                }}
+              >
+                <SearchOutlined />
+              </IconButton>
+            ),
+          }}
+        />
       </Box>
 
       {isLoading ? (

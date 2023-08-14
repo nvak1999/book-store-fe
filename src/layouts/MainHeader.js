@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -6,29 +6,36 @@ import IconButton from "@mui/material/IconButton";
 import Logo from "../components/Logo";
 import useAuth from "../hooks/useAuth";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import { Menu, MenuItem, Typography } from "@mui/material";
+import { Menu, Badge, MenuItem, Typography } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 import { getUser } from "../features/user/userSlice";
+import { getCart } from "../features/cart/cartSlice";
 
 function MainHeader() {
   let { user: authUser } = useSelector((state) => state.user);
+  const { cart } = useSelector((state) => state.cart);
   let { user, logout, isAuthenticated } = useAuth();
-  if (!user) {
-    user = {
-      role: "",
-      name: "",
-    };
-  }
+  const [cartItemCount, setCartItemCount] = useState(0);
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user._id) {
+      dispatch(getCart(user._id));
+    } else if (authUser._id) {
+      dispatch(getCart(authUser._id));
+    }
+  }, [dispatch, user, authUser]);
+
+  console.log("asd", cart);
 
   useEffect(() => {
     if (user._id) {
       dispatch(getUser(user._id));
     }
-  }, [dispatch, user._id]);
+  }, [dispatch, user]);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
@@ -47,6 +54,19 @@ function MainHeader() {
       });
     } catch (error) {}
   };
+
+  useEffect(() => {
+    if (cart) {
+      const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+      setCartItemCount(totalItems);
+    }
+  }, [cart]);
+  if (!user) {
+    user = {
+      role: "",
+      name: "",
+    };
+  }
 
   return (
     <Box>
@@ -79,7 +99,9 @@ function MainHeader() {
                 aria-label="menu"
                 sx={{ mr: 2 }}
               >
-                <ShoppingCartOutlinedIcon />
+                <Badge badgeContent={cartItemCount} color="primary">
+                  <ShoppingCartOutlinedIcon />
+                </Badge>
               </IconButton>
             </RouterLink>
           ) : (
