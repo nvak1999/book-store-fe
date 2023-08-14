@@ -153,7 +153,7 @@ function BookList() {
             ))}
           </Select>
         </FormControl>
-        <FormControl sx={{ minWidth: 150, ml: 1 }}>
+        <FormControl sx={{ minWidth: 180, m: 1 }}>
           <InputLabel id="price-range-label">Price Range</InputLabel>
           <Select
             labelId="price-range-label"
@@ -171,7 +171,7 @@ function BookList() {
             ))}
           </Select>
         </FormControl>
-        <Box sx={{ m: 2 }}>
+        <Box sx={{ ml: 0 }}>
           <TextField
             sx={{ height: 50, width: 180 }}
             id="outlined-basic"

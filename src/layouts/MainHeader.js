@@ -38,8 +38,12 @@ function MainHeader() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color="inherit">
+    <Box>
+      <AppBar
+        sx={{ width: "100%", margin: "0 auto" }}
+        position="static"
+        color="inherit"
+      >
         <Toolbar>
           <IconButton
             size="large"
@@ -122,14 +126,15 @@ function MainHeader() {
                 anchorEl={anchorEl}
                 anchorOrigin={{
                   vertical: "bottom",
-                  horizontal: "right",
+                  horizontal: "left",
                 }}
                 transformOrigin={{
                   vertical: "top",
-                  horizontal: "right",
+                  horizontal: "left",
                 }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
+                sx={{ mr: 0 }}
               >
                 {user.role !== "admin" && (
                   <MenuItem

@@ -102,7 +102,11 @@ function BookSingle() {
               mt: 10,
             }}
           >
-            <Grid container spacing={2} sx={{ width: 800 }}>
+            <Grid
+              container
+              spacing={2}
+              sx={{ width: "100%", margin: "0 auto" }}
+            >
               <Grid
                 item
                 xs={12}
