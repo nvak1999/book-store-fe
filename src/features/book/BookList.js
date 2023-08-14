@@ -86,11 +86,16 @@ function BookList() {
     } else {
       dispatch(getBooks(page, search, minPrice, maxPrice));
     }
-    await console.log("Applying filter:", minPrice, maxPrice);
   };
 
-  const clearFilter = () => {
-    console.log("Clearing filter");
+  const clearFilter = async () => {
+    await dispatch(changePrice(19, 40));
+    await setPriceRange([19, 40]);
+    if (category !== "") {
+      dispatch(getSingleCategory(category, page, search, 19, 40));
+    } else {
+      dispatch(getBooks(page, search, 19, 40));
+    }
   };
 
   const bookGird = (
