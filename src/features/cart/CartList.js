@@ -33,6 +33,8 @@ import { toast } from "react-toastify";
 import { getUser } from "../user/userSlice";
 import { useNavigate } from "react-router-dom";
 import PayPal from "./PayPal";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CartItemDeleteModal from "./CartItemDeleteModal";
 
 function CartList() {
   const { cart, isLoading } = useSelector((state) => state.cart);
@@ -41,6 +43,24 @@ function CartList() {
   const dispatch = useDispatch();
   const theme = useTheme();
   const isExtraSmallScreen = useMediaQuery(theme.breakpoints.down("xs"));
+  const [modalOpenDeleteItem, setModalOpenDeleteItem] = useState(false);
+  const [iemDelete, setItemDelete] = useState([]);
+
+  const handleDeleteItemClick = async (bookId, quantity, price) => {
+    await setItemDelete([bookId, 1, price]);
+    console.log(iemDelete);
+    setModalOpenDeleteItem(true);
+  };
+
+  const handleCloseModalDeleteItem = () => {
+    setModalOpenDeleteItem(false);
+  };
+
+  const handleConfirmDeleteItem = () => {
+    console.log(iemDelete);
+    dispatch(decreaseQuantity(userId, iemDelete[0], 1, iemDelete[2]));
+    setModalOpenDeleteItem(false);
+  };
 
   useEffect(() => {
     dispatch(getUser(userId));
@@ -174,6 +194,7 @@ function CartList() {
                     Amount
                   </Typography>
                 </TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -260,6 +281,21 @@ function CartList() {
                     >
                       ${(item.price * item.quantity).toFixed(2)}
                     </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="primary"
+                      aria-label="add to shopping cart"
+                      onClick={() =>
+                        handleDeleteItemClick(
+                          item.bookId,
+                          item.quantity,
+                          item.price
+                        )
+                      }
+                    >
+                      <DeleteIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
@@ -372,6 +408,11 @@ function CartList() {
           </Box>
         </Box>
       </Modal>
+      <CartItemDeleteModal
+        open={modalOpenDeleteItem}
+        onClose={handleCloseModalDeleteItem}
+        onConfirm={handleConfirmDeleteItem}
+      />
     </div>
   );
 }
