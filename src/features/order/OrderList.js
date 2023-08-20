@@ -220,7 +220,7 @@ function OrderList() {
             </Typography>
             <Typography variant="body1" id="modal-description" gutterBottom>
               Are you sure you want to{" "}
-              {actionType === "cancel" ? "cancel" : "delete"} this order?
+              {actionType === "cancel" ? "Comfirm" : "Delete"} this order?
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
               <Button onClick={() => setModalOpen(false)} sx={{ mr: 2 }}>
