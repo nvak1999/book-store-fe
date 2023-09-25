@@ -230,6 +230,7 @@ function CartList() {
                     >
                       <IconButton
                         size="small"
+                        disabled={item.quantity === 1 && true}
                         onClick={() =>
                           handleDecreaseQuantity(
                             item.bookId,
